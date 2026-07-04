@@ -114,6 +114,49 @@ body {
   animation: shimmer 7s linear infinite;
 }
 
+/* ---------- Scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Mic ripple rings while recording ---------- */
+.mic-ripple {
+  position: relative;
+}
+.mic-ripple::before,
+.mic-ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid rgba(239, 68, 68, 0.55);
+  animation: ripple 1.6s ease-out infinite;
+  pointer-events: none;
+}
+.mic-ripple::after {
+  animation-delay: 0.8s;
+}
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* Sparkle pulse for the AI pick badge */
+.sparkle {
+  display: inline-block;
+  animation: sparklePulse 1.8s ease-in-out infinite;
+}
+@keyframes sparklePulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.25) rotate(12deg); opacity: 0.75; }
+}
+
 /* ---------- Cloud animation states ---------- */
 .cloud-outer {
   display: inline-block;
@@ -154,6 +197,10 @@ body {
   .wave-bar,
   .blob,
   .shimmer-text,
+  .mic-ripple::before,
+  .mic-ripple::after,
+  .sparkle,
+  .reveal,
   .animate-micPulse,
   .animate-float,
   .animate-wobble,

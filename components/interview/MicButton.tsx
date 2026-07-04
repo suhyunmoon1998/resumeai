@@ -17,7 +17,7 @@ export default function MicButton({
         aria-label={recording ? "Stop recording" : "Start recording your answer"}
         className={`flex h-20 w-20 items-center justify-center rounded-full text-3xl transition disabled:opacity-40 ${
           recording
-            ? "animate-micPulse bg-red-500 text-white shadow-lg"
+            ? "mic-ripple animate-micPulse bg-red-500 text-white shadow-lg"
             : "g-bg glow-btn text-white"
         }`}
       >

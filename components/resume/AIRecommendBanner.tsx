@@ -14,7 +14,7 @@ export default function AIRecommendBanner({
   const template = getTemplate(templateId);
   return (
     <div className="flex items-center gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-4">
-      <span className="text-2xl" aria-hidden>
+      <span className="sparkle text-2xl" aria-hidden>
         ✦
       </span>
       <div className="flex-1">

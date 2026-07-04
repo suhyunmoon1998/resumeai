@@ -2,6 +2,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import ScrollReveal from "@/components/fx/ScrollReveal";
+import Spotlight from "@/components/fx/Spotlight";
+import Tilt from "@/components/fx/Tilt";
 
 const FEATURES = [
   {
@@ -92,6 +95,7 @@ export default async function LandingPage() {
       </header>
 
       {/* Hero */}
+      <Spotlight>
       <section className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pb-20 pt-20 text-center md:pt-28">
         <span className="g-border mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-gray-700">
           <span className="g-bg inline-block h-1.5 w-1.5 rounded-full" aria-hidden />
@@ -126,7 +130,8 @@ export default async function LandingPage() {
         </div>
 
         {/* Hero mock */}
-        <div className="card-hover glass mt-16 w-full max-w-3xl rounded-3xl p-4 shadow-xl">
+        <Tilt className="mt-16 w-full max-w-3xl">
+        <div className="glass rounded-3xl p-4 shadow-xl">
           <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl bg-white/70 p-6">
               <span className="text-5xl" aria-hidden>☁️</span>
@@ -153,49 +158,58 @@ export default async function LandingPage() {
             </div>
           </div>
         </div>
+        </Tilt>
       </section>
+      </Spotlight>
 
       {/* Features bento */}
       <section id="features" className="relative mx-auto max-w-5xl px-6 py-20">
-        <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
-          Everything between <span className="g-text">hello</span> and <span className="g-text">hired</span>
-        </h2>
+        <ScrollReveal>
+          <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
+            Everything between <span className="g-text">hello</span> and <span className="g-text">hired</span>
+          </h2>
+        </ScrollReveal>
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className={`card-hover glass rounded-3xl p-6 ${f.span}`}
-            >
-              <span className="text-3xl" aria-hidden>{f.icon}</span>
-              <h3 className="mt-3 font-display text-lg font-bold">{f.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-gray-500">{f.desc}</p>
-            </div>
+          {FEATURES.map((f, i) => (
+            <ScrollReveal key={f.title} delay={i * 70} className={f.span}>
+              <div className="card-hover glass h-full rounded-3xl p-6">
+                <span className="text-3xl" aria-hidden>{f.icon}</span>
+                <h3 className="mt-3 font-display text-lg font-bold">{f.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-gray-500">{f.desc}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* How it works */}
       <section id="how" className="relative mx-auto max-w-5xl px-6 py-20">
-        <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
-          Three steps. Zero typing.
-        </h2>
+        <ScrollReveal>
+          <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
+            Three steps. Zero typing.
+          </h2>
+        </ScrollReveal>
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
-          {STEPS.map((s) => (
-            <div key={s.n} className="card-hover glass rounded-3xl p-8 text-center">
-              <span className="g-text font-display text-5xl font-bold">{s.n}</span>
-              <h3 className="mt-4 font-display text-xl font-bold">{s.title}</h3>
-              <p className="mt-2 text-sm text-gray-500">{s.desc}</p>
-            </div>
+          {STEPS.map((s, i) => (
+            <ScrollReveal key={s.n} delay={i * 120}>
+              <div className="card-hover glass h-full rounded-3xl p-8 text-center">
+                <span className="g-text font-display text-5xl font-bold">{s.n}</span>
+                <h3 className="mt-4 font-display text-xl font-bold">{s.title}</h3>
+                <p className="mt-2 text-sm text-gray-500">{s.desc}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* Pricing */}
       <section id="pricing" className="relative mx-auto max-w-4xl px-6 py-20">
-        <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
-          Simple pricing
-        </h2>
-        <p className="mt-3 text-center text-gray-500">Start free. Upgrade when you&apos;re ready to stand out.</p>
+        <ScrollReveal>
+          <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
+            Simple pricing
+          </h2>
+          <p className="mt-3 text-center text-gray-500">Start free. Upgrade when you&apos;re ready to stand out.</p>
+        </ScrollReveal>
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="card-hover glass rounded-3xl p-8">
             <h3 className="font-display text-lg font-bold">Free</h3>
@@ -243,6 +257,7 @@ export default async function LandingPage() {
 
       {/* CTA */}
       <section className="relative mx-auto max-w-4xl px-6 pb-24 pt-8">
+        <ScrollReveal>
         <div className="card-hover relative overflow-hidden rounded-3xl bg-gray-950 px-8 py-14 text-center text-white">
           <div aria-hidden className="blob left-[-3rem] top-[-3rem] h-56 w-56 bg-indigo-500 opacity-40" />
           <div aria-hidden className="blob blob-2 bottom-[-4rem] right-[-3rem] h-56 w-56 bg-fuchsia-500 opacity-40" />
@@ -254,6 +269,7 @@ export default async function LandingPage() {
             <GoogleSignInButton />
           </div>
         </div>
+        </ScrollReveal>
       </section>
 
       {/* Footer */}

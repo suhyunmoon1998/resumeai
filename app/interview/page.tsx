@@ -25,6 +25,7 @@ import StylePicker from "@/components/resume/StylePicker";
 import CardPicker from "@/components/card/CardPicker";
 import QRShare from "@/components/card/QRShare";
 import { useToast } from "@/components/ui/toast";
+import Confetti from "@/components/fx/Confetti";
 
 type Screen = "role" | "interview" | "style" | "done" | "card" | "qr";
 
@@ -387,6 +388,7 @@ export default function InterviewPage() {
   if (screen === "done") {
     return (
       <main className="mesh-bg flex min-h-screen flex-col items-center justify-center px-6">
+        <Confetti />
         <TopBar />
         <div className="w-full max-w-md space-y-6 text-center">
           <CloudAnimation state="done" />
@@ -440,6 +442,7 @@ export default function InterviewPage() {
   // screen === "qr"
   return (
     <main className="mesh-bg min-h-screen">
+      <Confetti />
       <TopBar />
       {resumeData && (
         <QRShare data={resumeData} background={cardBackground} shareSlug={shareSlug} />
