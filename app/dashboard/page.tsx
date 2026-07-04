@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Profile, SavedResume, School } from "@/types";
 import { getTemplate } from "@/lib/templates";
 import DashboardResumeCard from "@/components/dashboard/DashboardResumeCard";
+import LatestResumeHero from "@/components/dashboard/LatestResumeHero";
 import SchoolPicker from "@/components/school/SchoolPicker";
 import SignOutButton from "@/components/auth/SignOutButton";
 import ThemeToggle from "@/components/theme/ThemeToggle";
@@ -73,10 +74,9 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-5xl px-6 py-10">
-        <p className="font-caveat text-2xl text-violet-500">Hey {firstName} 👋</p>
-        <div className="mb-8 mt-1 flex flex-wrap items-end justify-between gap-4">
-          <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-            My resumes
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <h1 className="font-caveat-brush text-5xl text-gray-900 dark:text-gray-100">
+            Hey {firstName} 👋
           </h1>
           <Link
             href="/interview"
@@ -86,6 +86,8 @@ export default async function DashboardPage() {
             + New Resume
           </Link>
         </div>
+
+        {resumes.length > 0 && <LatestResumeHero resume={resumes[0]} />}
 
         {!school && (
           <section className="glass card-hover mb-10 rounded-3xl p-6">
@@ -101,12 +103,14 @@ export default async function DashboardPage() {
 
         {resumes.length === 0 ? (
           <div className="glass rounded-3xl py-20 text-center">
-            <div className="mb-3 text-5xl" aria-hidden>
+            <div className="mb-3 animate-float text-6xl" aria-hidden>
               ☁️
             </div>
-            <p className="font-display font-semibold text-gray-600 dark:text-gray-300">No resumes yet.</p>
-            <p className="mt-1 text-sm text-gray-400">
-              Start a voice interview and watch your resume write itself.
+            <p className="font-caveat-brush text-3xl text-gray-600 dark:text-gray-300">
+              Nothing here yet!
+            </p>
+            <p className="mt-1 font-caveat text-xl text-gray-400">
+              Talk to the little cloud once — your resume saves itself here.
             </p>
             <Link
               href="/interview"
@@ -116,16 +120,21 @@ export default async function DashboardPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {resumes.map((r) => (
-              <DashboardResumeCard
-                key={r.id}
-                resume={r}
-                templateName={getTemplate(r.template_id).name}
-                accent={getTemplate(r.template_id).accent}
-              />
-            ))}
-          </div>
+          <>
+            <h2 className="mb-4 font-caveat text-3xl font-bold text-gray-700 dark:text-gray-300">
+              All my resumes
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {resumes.map((r) => (
+                <DashboardResumeCard
+                  key={r.id}
+                  resume={r}
+                  templateName={getTemplate(r.template_id).name}
+                  accent={getTemplate(r.template_id).accent}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </main>
