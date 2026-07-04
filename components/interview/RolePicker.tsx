@@ -10,10 +10,10 @@ export default function RolePicker({
 }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12">
-      <h1 className="text-center font-display text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
+      <h1 className="text-center font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 md:text-5xl">
         What do <span className="g-text">you</span> do?
       </h1>
-      <p className="mt-3 text-center text-gray-500">
+      <p className="mt-3 text-center text-gray-500 dark:text-gray-400">
         I&apos;ll tailor a few extra questions to your field.
       </p>
       <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">

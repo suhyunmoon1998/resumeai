@@ -20,7 +20,7 @@ export default function InterviewLayout({
       {/* Phone UI */}
       <div className="flex w-full flex-col items-center justify-center px-4 py-8 md:w-1/2">
         <div className="g-bg rounded-[2.75rem] p-[3px] shadow-2xl">
-          <div className="flex w-full max-w-sm flex-col items-center rounded-[2.6rem] bg-white/95 px-6 py-10" style={{ minHeight: 620 }}>
+          <div className="flex w-full max-w-sm flex-col items-center rounded-[2.6rem] bg-white/95 px-6 py-10 dark:bg-gray-900/95" style={{ minHeight: 620 }}>
             {phone}
           </div>
         </div>
@@ -42,13 +42,13 @@ export default function InterviewLayout({
       {showPanel && (
         <div className="fixed inset-0 z-50 bg-black/40 md:hidden" onClick={() => setShowPanel(false)}>
           <div
-            className="absolute inset-y-0 right-0 w-[88%] bg-gray-50 p-4"
+            className="absolute inset-y-0 right-0 w-[88%] bg-gray-50 p-4 dark:bg-gray-950"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setShowPanel(false)}
               aria-label="Close resume preview"
-              className="mb-3 rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-gray-600 shadow"
+              className="mb-3 rounded-lg bg-white px-3 py-1.5 text-sm font-semibold text-gray-600 shadow dark:bg-gray-800 dark:text-gray-300"
             >
               ← Back
             </button>

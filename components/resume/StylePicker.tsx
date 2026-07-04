@@ -21,8 +21,8 @@ export default function StylePicker({
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 py-10">
       <div className="text-center">
-        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">Pick a <span className="g-text">style</span></h1>
-        <p className="mt-1 text-gray-500">All 10 templates export to DOCX.</p>
+        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Pick a <span className="g-text">style</span></h1>
+        <p className="mt-1 text-gray-500 dark:text-gray-400">All 10 templates export to DOCX.</p>
       </div>
 
       {recommendation && (
@@ -52,7 +52,7 @@ export default function StylePicker({
             </div>
             <div className="space-y-1.5 p-4">
               <div className="flex items-center justify-between gap-2">
-                <span className="font-bold text-gray-900">{t.name}</span>
+                <span className="font-bold text-gray-900 dark:text-gray-100">{t.name}</span>
                 <span
                   className="rounded-full px-2 py-0.5 text-[10px] font-bold"
                   style={{ background: t.tagBg, color: t.tagTx }}
@@ -60,8 +60,8 @@ export default function StylePicker({
                   {t.tag}
                 </span>
               </div>
-              <p className="text-xs text-gray-500">{t.desc}</p>
-              <span className="inline-block rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t.desc}</p>
+              <span className="inline-block rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500 dark:text-gray-400">
                 {LAYOUT_BADGE[t.layout]}
               </span>
             </div>

@@ -12,15 +12,15 @@ export default function LoginPage() {
           ☁️
         </div>
         <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             Welcome to <span className="g-text">VoiceResume</span>
           </h1>
-          <p className="mt-3 text-sm text-gray-500">
+          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
             Sign in to start your voice interview.
           </p>
         </div>
         <GoogleSignInButton />
-        <Link href="/" className="text-xs font-medium text-gray-400 transition hover:text-gray-700">
+        <Link href="/" className="text-xs font-medium text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-300">
           ← Back to home
         </Link>
       </div>

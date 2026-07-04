@@ -102,7 +102,7 @@ export default function SchoolBackground({
       {school && (
         <>
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+            <span className="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-gray-200">
               <span
                 aria-hidden
                 className="h-3.5 w-3.5 rounded-full"
@@ -113,7 +113,7 @@ export default function SchoolBackground({
             <button
               onClick={() => setSchool(null)}
               aria-label="Change school"
-              className="text-xs font-medium text-gray-400 hover:text-gray-700"
+              className="text-xs font-medium text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             >
               Change
             </button>
@@ -137,7 +137,7 @@ export default function SchoolBackground({
                   style === s.id ? "border-gray-900" : "border-gray-200"
                 }`}
               >
-                <span className="block text-sm font-bold text-gray-800">{s.name}</span>
+                <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">{s.name}</span>
                 <span className="block text-[11px] text-gray-400">{s.desc}</span>
               </button>
             ))}
@@ -153,7 +153,7 @@ export default function SchoolBackground({
                   className={`rounded-full border px-3 py-1.5 text-xs font-semibold capitalize transition ${
                     pattern === p
                       ? "border-gray-900 bg-gray-900 text-white"
-                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                      : "border-gray-200 text-gray-600 dark:text-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   {p}

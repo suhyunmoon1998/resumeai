@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
+import CustomCursor from "@/components/fx/CustomCursor";
 
 export const metadata: Metadata = {
   title: "VoiceResume — Just talk. Watch it write itself.",
@@ -8,12 +9,15 @@ export const metadata: Metadata = {
     "Answer AI voice interview questions and get a polished resume plus a QR business card in minutes.",
 };
 
+const themeInit = `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -27,6 +31,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <ToastProvider>{children}</ToastProvider>
+        <CustomCursor />
       </body>
     </html>
   );

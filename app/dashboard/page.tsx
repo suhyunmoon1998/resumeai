@@ -6,6 +6,7 @@ import { getTemplate } from "@/lib/templates";
 import DashboardResumeCard from "@/components/dashboard/DashboardResumeCard";
 import SchoolPicker from "@/components/school/SchoolPicker";
 import SignOutButton from "@/components/auth/SignOutButton";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -38,12 +39,12 @@ export default async function DashboardPage() {
     <main className="mesh-bg min-h-screen">
       <header className="sticky top-0 z-50 px-4 pt-4">
         <div className="glass mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
-          <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-gray-900">
+          <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
             <span aria-hidden>☁️</span> VoiceResume
           </Link>
           <div className="flex items-center gap-4">
             {school && (
-              <span className="hidden items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-xs font-semibold text-gray-700 sm:inline-flex">
+              <span className="hidden items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300 sm:inline-flex">
                 <span
                   aria-hidden
                   className="h-2.5 w-2.5 rounded-full"
@@ -65,6 +66,7 @@ export default async function DashboardPage() {
                 />
               </span>
             )}
+            <ThemeToggle />
             <SignOutButton />
           </div>
         </div>
@@ -73,7 +75,7 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-5xl px-6 py-10">
         <p className="font-caveat text-2xl text-violet-500">Hey {firstName} 👋</p>
         <div className="mb-8 mt-1 flex flex-wrap items-end justify-between gap-4">
-          <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             My resumes
           </h1>
           <Link
@@ -87,10 +89,10 @@ export default async function DashboardPage() {
 
         {!school && (
           <section className="glass card-hover mb-10 rounded-3xl p-6">
-            <h2 className="mb-1 font-display text-lg font-bold text-gray-900">
+            <h2 className="mb-1 font-display text-lg font-bold text-gray-900 dark:text-gray-100">
               Pick your school or company 🎓
             </h2>
-            <p className="mb-4 text-sm text-gray-500">
+            <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
               Your business card background uses its official colors.
             </p>
             <SchoolPicker />
@@ -102,7 +104,7 @@ export default async function DashboardPage() {
             <div className="mb-3 text-5xl" aria-hidden>
               ☁️
             </div>
-            <p className="font-display font-semibold text-gray-600">No resumes yet.</p>
+            <p className="font-display font-semibold text-gray-600 dark:text-gray-300">No resumes yet.</p>
             <p className="mt-1 text-sm text-gray-400">
               Start a voice interview and watch your resume write itself.
             </p>

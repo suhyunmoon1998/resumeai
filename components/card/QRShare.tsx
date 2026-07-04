@@ -106,13 +106,13 @@ export default function QRShare({
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-6 py-10">
       <div className="text-center">
-        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">Your card is <span className="g-text">ready</span> 🎉</h1>
-        <p className="mt-1 text-gray-500">Scan the QR or share it anywhere.</p>
+        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Your card is <span className="g-text">ready</span> 🎉</h1>
+        <p className="mt-1 text-gray-500 dark:text-gray-400">Scan the QR or share it anywhere.</p>
       </div>
 
       <div ref={containerRef} aria-label="Business card preview">
         {!ready && (
-          <div className="flex aspect-[7/4] w-full items-center justify-center rounded-2xl bg-gray-100 text-gray-400">
+          <div className="flex aspect-[7/4] w-full items-center justify-center rounded-2xl bg-gray-100 text-gray-400 dark:bg-gray-800">
             Rendering card…
           </div>
         )}
@@ -129,7 +129,7 @@ export default function QRShare({
             <span className="text-2xl" aria-hidden>
               {o.icon}
             </span>
-            <span className="text-xs font-semibold text-gray-700">{o.label}</span>
+            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{o.label}</span>
           </button>
         ))}
       </div>

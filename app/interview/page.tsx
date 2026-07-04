@@ -26,6 +26,8 @@ import CardPicker from "@/components/card/CardPicker";
 import QRShare from "@/components/card/QRShare";
 import { useToast } from "@/components/ui/toast";
 import Confetti from "@/components/fx/Confetti";
+import VoiceWaveform from "@/components/interview/VoiceWaveform";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 
 type Screen = "role" | "interview" | "style" | "done" | "card" | "qr";
 
@@ -287,7 +289,7 @@ export default function InterviewPage() {
 
             <CloudAnimation state={cloudState} />
 
-            <h2 className="whitespace-pre-line text-center font-caveat text-3xl font-semibold text-gray-800">
+            <h2 className="whitespace-pre-line text-center font-caveat text-3xl font-semibold text-gray-800 dark:text-gray-200">
               {currentQ?.short}
             </h2>
 
@@ -297,8 +299,10 @@ export default function InterviewPage() {
               </p>
             )}
 
-            <p aria-live="polite" className="min-h-[3rem] px-2 text-center text-sm text-gray-500">
-              {transcript || "…"}
+            <VoiceWaveform active={recording} />
+
+            <p aria-live="polite" className="min-h-[3rem] px-2 text-center text-sm text-gray-500 dark:text-gray-400">
+              {transcript || (recording ? "Listening…" : "…")}
             </p>
 
             {voiceSupported ? (
@@ -331,12 +335,12 @@ export default function InterviewPage() {
                   onChange={(e) => setTextFallback(e.target.value)}
                   placeholder="Or type your answer…"
                   aria-label="Type your answer"
-                  className="h-10 flex-1 rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  className="h-10 flex-1 rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                 />
                 <button
                   type="submit"
                   aria-label="Submit typed answer"
-                  className="rounded-xl bg-gray-100 px-4 text-sm font-bold text-gray-700 hover:bg-gray-200"
+                  className="rounded-xl bg-gray-100 px-4 text-sm font-bold text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
                   ↑
                 </button>
@@ -344,7 +348,7 @@ export default function InterviewPage() {
               <button
                 onClick={skipQuestion}
                 aria-label="Skip this question"
-                className="text-xs font-medium text-gray-300 transition hover:text-gray-500"
+                className="text-xs font-medium text-gray-300 transition hover:text-gray-500 dark:hover:text-gray-400"
               >
                 Skip →
               </button>
@@ -393,8 +397,8 @@ export default function InterviewPage() {
         <div className="w-full max-w-md space-y-6 text-center">
           <CloudAnimation state="done" />
           <div>
-            <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">All <span className="g-text">done!</span> 🎉</h1>
-            <p className="mt-2 text-gray-500">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">All <span className="g-text">done!</span> 🎉</h1>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">
               Your resume is saved to your dashboard.
             </p>
           </div>
@@ -409,13 +413,13 @@ export default function InterviewPage() {
             <button
               onClick={makeCard}
               aria-label="Make a QR business card"
-              className="g-border card-hover w-full rounded-xl py-3.5 text-sm font-bold text-gray-900"
+              className="g-border card-hover w-full rounded-xl py-3.5 text-sm font-bold text-gray-900 dark:text-gray-100"
             >
               📇 Make my business card
             </button>
             <Link
               href="/dashboard"
-              className="block text-sm font-medium text-gray-400 transition hover:text-gray-700"
+              className="block text-sm font-medium text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-300"
             >
               Back to dashboard
             </Link>
@@ -450,7 +454,7 @@ export default function InterviewPage() {
       <div className="pb-12 text-center">
         <Link
           href="/dashboard"
-          className="text-sm font-medium text-gray-400 transition hover:text-gray-700"
+          className="text-sm font-medium text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-300"
         >
           Back to dashboard →
         </Link>
@@ -463,15 +467,18 @@ function TopBar() {
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
       <div className="glass mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
-        <Link href="/dashboard" className="font-display text-lg font-bold tracking-tight text-gray-900">
+        <Link href="/dashboard" className="font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
           ☁️ VoiceResume
         </Link>
-        <Link
-          href="/dashboard"
-          className="text-sm font-medium text-gray-400 transition hover:text-gray-700"
-        >
-          Exit
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link
+            href="/dashboard"
+            className="text-sm font-medium text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-300"
+          >
+            Exit
+          </Link>
+        </div>
       </div>
     </header>
   );

@@ -77,7 +77,7 @@ export default function SchoolPicker({
               style={{ background: s.colors?.primary ?? "#999" }}
             />
             <span className="flex-1">
-              <span className="block text-sm font-semibold text-gray-800">{s.name}</span>
+              <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">{s.name}</span>
               <span className="block text-xs text-gray-400">
                 {s.type === "company" ? "Company" : "University"}
                 {s.domain ? ` · ${s.domain}` : ""}
@@ -92,7 +92,7 @@ export default function SchoolPicker({
 
       {selected && (
         <div className="space-y-3 rounded-xl border border-gray-200 p-4">
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <input
               type="checkbox"
               checked={isGraduated}

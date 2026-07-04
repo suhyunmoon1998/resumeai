@@ -5,6 +5,7 @@ import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import ScrollReveal from "@/components/fx/ScrollReveal";
 import Spotlight from "@/components/fx/Spotlight";
 import Tilt from "@/components/fx/Tilt";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 
 const FEATURES = [
   {
@@ -65,7 +66,7 @@ export default async function LandingPage() {
   if (user) redirect("/dashboard");
 
   return (
-    <main className="mesh-bg relative min-h-screen overflow-hidden text-gray-900">
+    <main className="mesh-bg relative min-h-screen overflow-hidden text-gray-900 dark:text-gray-100">
       {/* Floating gradient blobs */}
       <div aria-hidden className="blob left-[-8rem] top-[-6rem] h-96 w-96 bg-indigo-400" />
       <div aria-hidden className="blob blob-2 right-[-6rem] top-40 h-80 w-80 bg-fuchsia-400" />
@@ -78,12 +79,13 @@ export default async function LandingPage() {
             <span aria-hidden>☁️</span> VoiceResume
           </span>
           <div className="flex items-center gap-5">
-            <a href="#features" className="hidden text-sm font-medium text-gray-600 transition hover:text-gray-900 sm:block">
+            <a href="#features" className="hidden text-sm font-medium text-gray-600 dark:text-gray-300 transition hover:text-gray-900 dark:hover:text-gray-100 sm:block">
               Features
             </a>
-            <a href="#pricing" className="hidden text-sm font-medium text-gray-600 transition hover:text-gray-900 sm:block">
+            <a href="#pricing" className="hidden text-sm font-medium text-gray-600 dark:text-gray-300 transition hover:text-gray-900 dark:hover:text-gray-100 sm:block">
               Pricing
             </a>
+            <ThemeToggle />
             <Link
               href="/auth/login"
               className="g-bg glow-btn rounded-xl px-4 py-2 text-sm font-bold text-white"
@@ -97,7 +99,7 @@ export default async function LandingPage() {
       {/* Hero */}
       <Spotlight>
       <section className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pb-20 pt-20 text-center md:pt-28">
-        <span className="g-border mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-gray-700">
+        <span className="g-border mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300">
           <span className="g-bg inline-block h-1.5 w-1.5 rounded-full" aria-hidden />
           Powered by Claude · Voice AI resume builder
         </span>
@@ -108,7 +110,7 @@ export default async function LandingPage() {
           <span className="shimmer-text">Watch it write itself.</span>
         </h1>
 
-        <p className="mt-6 max-w-xl text-lg text-gray-500 md:text-xl">
+        <p className="mt-6 max-w-xl text-lg text-gray-500 dark:text-gray-400 md:text-xl">
           A 5-minute voice interview becomes a polished, ATS-ready resume and a
           QR business card in your school&apos;s colors.
         </p>
@@ -117,7 +119,7 @@ export default async function LandingPage() {
           <GoogleSignInButton />
           <a
             href="#how"
-            className="text-sm font-semibold text-gray-500 underline-offset-4 transition hover:text-gray-900 hover:underline"
+            className="text-sm font-semibold text-gray-500 dark:text-gray-400 underline-offset-4 transition hover:text-gray-900 dark:hover:text-gray-100 hover:underline"
           >
             See how it works ↓
           </a>
@@ -133,20 +135,20 @@ export default async function LandingPage() {
         <Tilt className="mt-16 w-full max-w-3xl">
         <div className="glass rounded-3xl p-4 shadow-xl">
           <div className="flex flex-col gap-4 md:flex-row">
-            <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl bg-white/70 p-6">
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl bg-white/70 p-6 dark:bg-gray-800/60">
               <span className="text-5xl" aria-hidden>☁️</span>
-              <p className="font-caveat text-2xl text-gray-700">&ldquo;Tell me about yourself.&rdquo;</p>
+              <p className="font-caveat text-2xl text-gray-700 dark:text-gray-300">&ldquo;Tell me about yourself.&rdquo;</p>
               <span className="g-bg inline-flex h-12 w-12 items-center justify-center rounded-full text-xl text-white shadow-lg" aria-hidden>
                 🎙
               </span>
             </div>
-            <div className="flex-1 rounded-2xl bg-white/80 p-6 text-left">
+            <div className="flex-1 rounded-2xl bg-white/80 p-6 text-left dark:bg-gray-800/70">
               <div className="g-bg mb-3 h-8 w-2/3 rounded-lg opacity-90" />
-              <div className="mb-4 h-3 w-1/2 rounded bg-gray-200" />
+              <div className="mb-4 h-3 w-1/2 rounded bg-gray-200 dark:bg-gray-600" />
               <div className="space-y-2">
-                <div className="h-2.5 w-full rounded bg-gray-100" />
-                <div className="h-2.5 w-11/12 rounded bg-gray-100" />
-                <div className="h-2.5 w-4/5 rounded bg-gray-100" />
+                <div className="h-2.5 w-full rounded bg-gray-100 dark:bg-gray-700" />
+                <div className="h-2.5 w-11/12 rounded bg-gray-100 dark:bg-gray-700" />
+                <div className="h-2.5 w-4/5 rounded bg-gray-100 dark:bg-gray-700" />
               </div>
               <div className="mt-4 flex gap-1.5">
                 {["React", "Figma", "SQL"].map((s) => (
@@ -175,7 +177,7 @@ export default async function LandingPage() {
               <div className="card-hover glass h-full rounded-3xl p-6">
                 <span className="text-3xl" aria-hidden>{f.icon}</span>
                 <h3 className="mt-3 font-display text-lg font-bold">{f.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-gray-500">{f.desc}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{f.desc}</p>
               </div>
             </ScrollReveal>
           ))}
@@ -195,7 +197,7 @@ export default async function LandingPage() {
               <div className="card-hover glass h-full rounded-3xl p-8 text-center">
                 <span className="g-text font-display text-5xl font-bold">{s.n}</span>
                 <h3 className="mt-4 font-display text-xl font-bold">{s.title}</h3>
-                <p className="mt-2 text-sm text-gray-500">{s.desc}</p>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{s.desc}</p>
               </div>
             </ScrollReveal>
           ))}
@@ -208,7 +210,7 @@ export default async function LandingPage() {
           <h2 className="text-center font-display text-3xl font-bold tracking-tight md:text-4xl">
             Simple pricing
           </h2>
-          <p className="mt-3 text-center text-gray-500">Start free. Upgrade when you&apos;re ready to stand out.</p>
+          <p className="mt-3 text-center text-gray-500 dark:text-gray-400">Start free. Upgrade when you&apos;re ready to stand out.</p>
         </ScrollReveal>
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="card-hover glass rounded-3xl p-8">
@@ -216,7 +218,7 @@ export default async function LandingPage() {
             <p className="mt-2 font-display text-4xl font-bold">
               $0<span className="text-base font-medium text-gray-400"> / forever</span>
             </p>
-            <ul className="mt-6 space-y-2.5 text-sm text-gray-600">
+            <ul className="mt-6 space-y-2.5 text-sm text-gray-600 dark:text-gray-300">
               <li>✓ 1 voice interview resume</li>
               <li>✓ 3 ATS-safe templates</li>
               <li>✓ QR business card + share link</li>
@@ -224,7 +226,7 @@ export default async function LandingPage() {
             </ul>
             <Link
               href="/auth/login"
-              className="mt-8 block rounded-xl border-2 border-gray-900 py-3 text-center text-sm font-bold text-gray-900 transition hover:bg-gray-900 hover:text-white"
+              className="mt-8 block rounded-xl border-2 border-gray-900 py-3 text-center text-sm font-bold text-gray-900 transition hover:bg-gray-900 hover:text-white dark:border-gray-100 dark:text-gray-100 dark:hover:bg-gray-100 dark:hover:text-gray-900"
             >
               Start free
             </Link>
@@ -273,9 +275,9 @@ export default async function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative border-t border-gray-200/60 px-6 py-10">
+      <footer className="relative border-t border-gray-200/60 px-6 py-10 dark:border-gray-800">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 text-sm text-gray-400 sm:flex-row">
-          <span className="font-display font-bold text-gray-600">☁️ VoiceResume</span>
+          <span className="font-display font-bold text-gray-600 dark:text-gray-300">☁️ VoiceResume</span>
           <span>Just talk. Watch it write itself.</span>
           <span>© {new Date().getFullYear()} VoiceResume</span>
         </div>
