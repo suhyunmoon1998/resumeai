@@ -8,20 +8,21 @@ export const dynamic = "force-dynamic";
 export default async function PublicCardPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const supabase = createServiceClient();
 
   const { data: card } = await supabase
     .from("cards")
     .select("*, resume:resumes(data)")
-    .eq("share_slug", params.slug)
+    .eq("share_slug", slug)
     .single();
 
   if (!card) notFound();
 
   // Best-effort view counter
-  await supabase.rpc("increment_card_views", { slug: params.slug });
+  await supabase.rpc("increment_card_views", { slug });
 
   const typedCard = card as SavedCard & { resume: { data: ResumeData } | null };
   const resumeData = typedCard.resume?.data ?? null;
