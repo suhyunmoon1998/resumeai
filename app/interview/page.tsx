@@ -260,7 +260,7 @@ export default function InterviewPage() {
 
   if (screen === "role") {
     return (
-      <main className="min-h-screen bg-gray-50">
+      <main className="mesh-bg min-h-screen">
         <TopBar />
         <RolePicker onSelect={startInterview} />
       </main>
@@ -278,7 +278,7 @@ export default function InterviewPage() {
               </p>
               <div className="mx-auto mt-2 h-1.5 w-40 overflow-hidden rounded-full bg-gray-100">
                 <div
-                  className="h-full rounded-full bg-gray-900 transition-all"
+                  className="g-bg h-full rounded-full transition-all"
                   style={{ width: `${((qIndex + 1) / questions.length) * 100}%` }}
                 />
               </div>
@@ -313,7 +313,7 @@ export default function InterviewPage() {
                 <button
                   onClick={() => submitAnswer(transcript)}
                   aria-label="Confirm answer"
-                  className="w-full rounded-xl bg-gray-900 py-3 text-sm font-bold text-white transition hover:bg-gray-700"
+                  className="g-bg glow-btn w-full rounded-xl py-3 text-sm font-bold text-white"
                 >
                   That&apos;s right →
                 </button>
@@ -364,7 +364,7 @@ export default function InterviewPage() {
 
   if (screen === "style") {
     return (
-      <main className="min-h-screen bg-gray-50">
+      <main className="mesh-bg min-h-screen">
         <TopBar />
         <StylePicker
           selected={templateId}
@@ -375,7 +375,7 @@ export default function InterviewPage() {
           <button
             onClick={confirmStyle}
             aria-label="Confirm template choice"
-            className="w-full rounded-xl bg-gray-900 py-3.5 text-sm font-bold text-white transition hover:bg-gray-700"
+            className="g-bg glow-btn w-full rounded-xl py-3.5 text-sm font-bold text-white"
           >
             Use {getTemplate(templateId).name} →
           </button>
@@ -386,12 +386,12 @@ export default function InterviewPage() {
 
   if (screen === "done") {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-6">
+      <main className="mesh-bg flex min-h-screen flex-col items-center justify-center px-6">
         <TopBar />
         <div className="w-full max-w-md space-y-6 text-center">
           <CloudAnimation state="done" />
           <div>
-            <h1 className="font-caveat-brush text-4xl text-gray-900">All done! 🎉</h1>
+            <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">All <span className="g-text">done!</span> 🎉</h1>
             <p className="mt-2 text-gray-500">
               Your resume is saved to your dashboard.
             </p>
@@ -400,14 +400,14 @@ export default function InterviewPage() {
             <button
               onClick={download}
               aria-label="Download resume as DOCX"
-              className="w-full rounded-xl bg-gray-900 py-3.5 text-sm font-bold text-white transition hover:bg-gray-700"
+              className="g-bg glow-btn w-full rounded-xl py-3.5 text-sm font-bold text-white"
             >
               ⬇ Download DOCX
             </button>
             <button
               onClick={makeCard}
               aria-label="Make a QR business card"
-              className="w-full rounded-xl border-2 border-gray-900 py-3.5 text-sm font-bold text-gray-900 transition hover:bg-gray-100"
+              className="g-border card-hover w-full rounded-xl py-3.5 text-sm font-bold text-gray-900"
             >
               📇 Make my business card
             </button>
@@ -425,7 +425,7 @@ export default function InterviewPage() {
 
   if (screen === "card") {
     return (
-      <main className="min-h-screen bg-gray-50">
+      <main className="mesh-bg min-h-screen">
         <TopBar />
         <CardPicker
           defaultSchool={school}
@@ -439,7 +439,7 @@ export default function InterviewPage() {
 
   // screen === "qr"
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="mesh-bg min-h-screen">
       <TopBar />
       {resumeData && (
         <QRShare data={resumeData} background={cardBackground} shareSlug={shareSlug} />
@@ -458,9 +458,9 @@ export default function InterviewPage() {
 
 function TopBar() {
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-        <Link href="/dashboard" className="font-caveat-brush text-xl text-gray-900">
+    <header className="sticky top-0 z-50 px-4 pt-4">
+      <div className="glass mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
+        <Link href="/dashboard" className="font-display text-lg font-bold tracking-tight text-gray-900">
           ☁️ VoiceResume
         </Link>
         <Link

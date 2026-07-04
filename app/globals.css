@@ -4,19 +4,121 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #111827;
+  --foreground: #0f1222;
+  --brand-from: #6366f1; /* indigo-500 */
+  --brand-via: #8b5cf6;  /* violet-500 */
+  --brand-to: #d946ef;   /* fuchsia-500 */
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Brand utilities ---------- */
+.g-text {
+  background: linear-gradient(100deg, var(--brand-from), var(--brand-via) 50%, var(--brand-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.g-bg {
+  background: linear-gradient(100deg, var(--brand-from), var(--brand-via) 50%, var(--brand-to));
+}
+
+.g-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(100deg, var(--brand-from), var(--brand-to)) border-box;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+  background: rgba(15, 18, 34, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mesh-bg {
+  background:
+    radial-gradient(40rem 40rem at 15% -10%, rgba(99, 102, 241, 0.18), transparent 60%),
+    radial-gradient(36rem 36rem at 90% 5%, rgba(217, 70, 239, 0.14), transparent 60%),
+    radial-gradient(30rem 30rem at 55% 110%, rgba(56, 189, 248, 0.14), transparent 60%),
+    #fbfbfe;
+}
+
+.mesh-bg-dark {
+  background:
+    radial-gradient(42rem 42rem at 15% -10%, rgba(99, 102, 241, 0.35), transparent 60%),
+    radial-gradient(36rem 36rem at 90% 10%, rgba(217, 70, 239, 0.25), transparent 60%),
+    radial-gradient(30rem 30rem at 50% 115%, rgba(56, 189, 248, 0.2), transparent 60%),
+    #0b0d1a;
+}
+
+.glow-btn {
+  box-shadow: 0 8px 30px -6px rgba(139, 92, 246, 0.55);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.glow-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px -6px rgba(139, 92, 246, 0.65);
+}
+
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 44px -18px rgba(15, 18, 34, 0.25);
+}
+
+/* Animated blobs behind hero */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.5;
+  pointer-events: none;
+  animation: blobFloat 14s ease-in-out infinite;
+}
+.blob-2 { animation-delay: -5s; }
+.blob-3 { animation-delay: -9s; }
+
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.08); }
+  66% { transform: translate(-25px, 25px) scale(0.94); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 50%; }
+  100% { background-position: -200% 50%; }
+}
+.shimmer-text {
+  background: linear-gradient(100deg, var(--brand-from), var(--brand-to), var(--brand-via), var(--brand-from));
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 7s linear infinite;
 }
 
 /* ---------- Cloud animation states ---------- */
 .cloud-outer {
   display: inline-block;
   transition: transform 0.3s ease;
+  filter: drop-shadow(0 12px 24px rgba(99, 102, 241, 0.2));
 }
 .cloud-outer.state-idle {
   animation: float 3.5s ease-in-out infinite;
@@ -50,6 +152,8 @@ body {
   .cloud-outer,
   .thinking-dot,
   .wave-bar,
+  .blob,
+  .shimmer-text,
   .animate-micPulse,
   .animate-float,
   .animate-wobble,

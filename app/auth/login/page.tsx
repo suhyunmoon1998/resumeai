@@ -1,19 +1,28 @@
+import Link from "next/link";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-50 to-white px-6">
-      <div className="flex flex-col items-center gap-8 text-center">
+    <main className="mesh-bg relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
+      <div aria-hidden className="blob left-[-6rem] top-[-4rem] h-80 w-80 bg-indigo-400" />
+      <div aria-hidden className="blob blob-2 bottom-[-6rem] right-[-4rem] h-80 w-80 bg-fuchsia-400" />
+
+      <div className="glass card-hover relative flex w-full max-w-sm flex-col items-center gap-8 rounded-3xl px-8 py-12 text-center shadow-xl">
         <div className="text-6xl" aria-hidden>
           ☁️
         </div>
         <div>
-          <h1 className="font-caveat-brush text-5xl text-gray-900">VoiceResume</h1>
-          <p className="mt-3 text-gray-500">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-gray-900">
+            Welcome to <span className="g-text">VoiceResume</span>
+          </h1>
+          <p className="mt-3 text-sm text-gray-500">
             Sign in to start your voice interview.
           </p>
         </div>
         <GoogleSignInButton />
+        <Link href="/" className="text-xs font-medium text-gray-400 transition hover:text-gray-700">
+          ← Back to home
+        </Link>
       </div>
     </main>
   );

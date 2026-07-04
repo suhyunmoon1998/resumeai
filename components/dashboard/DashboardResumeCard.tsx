@@ -43,7 +43,7 @@ export default function DashboardResumeCard({
   };
 
   return (
-    <div className="flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+    <div className="card-hover glass flex flex-col rounded-3xl p-5">
       <div className="mb-3 flex items-start justify-between gap-2">
         <div>
           <h3 className="font-bold leading-tight text-gray-900">
@@ -65,7 +65,7 @@ export default function DashboardResumeCard({
         <button
           onClick={download}
           aria-label={`Download ${resume.title} as DOCX`}
-          className="flex-1 rounded-lg bg-gray-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-gray-700"
+          className="g-bg flex-1 rounded-lg px-3 py-2 text-xs font-bold text-white transition hover:opacity-90"
         >
           ⬇ Download
         </button>

@@ -16,11 +16,13 @@ export default function InterviewLayout({
   const [showPanel, setShowPanel] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="mesh-bg flex min-h-screen">
       {/* Phone UI */}
       <div className="flex w-full flex-col items-center justify-center px-4 py-8 md:w-1/2">
-        <div className="flex w-full max-w-sm flex-col items-center rounded-[2.5rem] border-8 border-gray-900 bg-white px-6 py-10 shadow-2xl" style={{ minHeight: 620 }}>
-          {phone}
+        <div className="g-bg rounded-[2.75rem] p-[3px] shadow-2xl">
+          <div className="flex w-full max-w-sm flex-col items-center rounded-[2.6rem] bg-white/95 px-6 py-10" style={{ minHeight: 620 }}>
+            {phone}
+          </div>
         </div>
       </div>
 
@@ -33,7 +35,7 @@ export default function InterviewLayout({
       <button
         onClick={() => setShowPanel(true)}
         aria-label="Preview resume"
-        className="fixed bottom-5 right-5 z-40 rounded-full bg-gray-900 px-5 py-3 text-sm font-bold text-white shadow-xl md:hidden"
+        className="g-bg glow-btn fixed bottom-5 right-5 z-40 rounded-full px-5 py-3 text-sm font-bold text-white md:hidden"
       >
         Preview →
       </button>

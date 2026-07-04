@@ -21,7 +21,7 @@ export default function StylePicker({
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 py-10">
       <div className="text-center">
-        <h1 className="font-caveat-brush text-4xl text-gray-900">Pick a style</h1>
+        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">Pick a <span className="g-text">style</span></h1>
         <p className="mt-1 text-gray-500">All 10 templates export to DOCX.</p>
       </div>
 
@@ -39,8 +39,10 @@ export default function StylePicker({
             key={t.id}
             onClick={() => onSelect(t.id)}
             aria-label={`Choose template ${t.name}`}
-            className={`flex flex-col overflow-hidden rounded-2xl border-2 text-left transition hover:-translate-y-0.5 hover:shadow-md ${
-              selected === t.id ? "border-gray-900" : "border-gray-200"
+            className={`card-hover flex flex-col overflow-hidden rounded-2xl border-2 bg-white/80 text-left ${
+              selected === t.id
+                ? "border-violet-500 ring-2 ring-violet-200"
+                : "border-gray-200"
             }`}
           >
             <div className="h-20 w-full" style={{ background: t.bg }}>

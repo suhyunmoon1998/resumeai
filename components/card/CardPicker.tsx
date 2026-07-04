@@ -24,7 +24,7 @@ export default function CardPicker({
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-6 py-10">
       <div className="text-center">
-        <h1 className="font-caveat-brush text-4xl text-gray-900">Design your card</h1>
+        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">Design your <span className="g-text">card</span></h1>
         <p className="mt-1 text-gray-500">
           Pick a preset, use your school colors, or draw your own.
         </p>
@@ -99,7 +99,7 @@ export default function CardPicker({
       <button
         onClick={onDone}
         aria-label="Continue to QR share"
-        className="w-full rounded-xl bg-gray-900 py-3.5 text-sm font-bold text-white transition hover:bg-gray-700"
+        className="g-bg glow-btn w-full rounded-xl py-3.5 text-sm font-bold text-white"
       >
         Make my card →
       </button>

@@ -106,7 +106,7 @@ export default function QRShare({
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-6 py-10">
       <div className="text-center">
-        <h1 className="font-caveat-brush text-4xl text-gray-900">Your card is ready 🎉</h1>
+        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900">Your card is <span className="g-text">ready</span> 🎉</h1>
         <p className="mt-1 text-gray-500">Scan the QR or share it anywhere.</p>
       </div>
 
@@ -124,7 +124,7 @@ export default function QRShare({
             key={o.label}
             onClick={o.onClick}
             aria-label={o.label}
-            className="flex flex-col items-center gap-1.5 rounded-2xl border border-gray-200 bg-white py-4 transition hover:-translate-y-0.5 hover:shadow-md"
+            className="card-hover glass flex flex-col items-center gap-1.5 rounded-2xl py-4"
           >
             <span className="text-2xl" aria-hidden>
               {o.icon}
