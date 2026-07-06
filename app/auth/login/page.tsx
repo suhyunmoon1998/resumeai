@@ -7,7 +7,7 @@ export default function LoginPage() {
       <div aria-hidden className="blob left-[-6rem] top-[-4rem] h-80 w-80 bg-yellow-300" />
       <div aria-hidden className="blob blob-2 bottom-[-6rem] right-[-4rem] h-80 w-80 bg-amber-300" />
 
-      <div className="glass card-hover relative flex w-full max-w-sm flex-col items-center gap-8 rounded-3xl px-8 py-12 text-center shadow-xl">
+      <div className="glass card-hover tape note-rot-l relative flex w-full max-w-sm flex-col items-center gap-8 rounded-3xl px-8 py-12 text-center shadow-xl">
         <div className="text-6xl" aria-hidden>
           ☁️
         </div>

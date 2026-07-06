@@ -112,7 +112,11 @@ export default async function LandingPage() {
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {FEATURES.map((f, i) => (
             <ScrollReveal key={f.title} delay={i * 70}>
-              <div className="card-hover glass h-full rounded-3xl p-6 text-center">
+              <div
+                className={`card-hover glass tape h-full rounded-3xl p-6 text-center ${
+                  i % 2 ? "note-rot-r" : "note-rot-l"
+                }`}
+              >
                 <span className="text-4xl" aria-hidden>
                   {f.icon}
                 </span>
@@ -136,7 +140,11 @@ export default async function LandingPage() {
         <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
           {STEPS.map((s, i) => (
             <ScrollReveal key={s.n} delay={i * 120}>
-              <div className="card-hover glass h-full rounded-3xl p-8 text-center">
+              <div
+                className={`card-hover glass tape h-full rounded-3xl p-8 text-center ${
+                  i % 2 ? "note-rot-l" : "note-rot-r"
+                }`}
+              >
                 <span className="g-text font-caveat-brush text-6xl">{s.n}</span>
                 <h3 className="mt-3 font-caveat text-3xl font-bold">{s.title}</h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{s.desc}</p>
@@ -155,7 +163,7 @@ export default async function LandingPage() {
           </p>
         </ScrollReveal>
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="card-hover glass rounded-3xl p-8">
+          <div className="card-hover glass tape note-rot-l rounded-3xl p-8">
             <h3 className="font-caveat text-3xl font-bold">Free</h3>
             <p className="mt-1 font-caveat-brush text-5xl">
               $0<span className="font-caveat text-xl text-gray-400"> / forever</span>
@@ -173,7 +181,7 @@ export default async function LandingPage() {
               Start free
             </Link>
           </div>
-          <div className="card-hover relative overflow-hidden rounded-3xl bg-gray-950 p-8 text-white shadow-2xl">
+          <div className="card-hover tape note-rot-r relative rounded-3xl bg-gray-950 p-8 text-white shadow-2xl">
             <span className="g-bg absolute right-6 top-6 rounded-full px-3 py-1 font-caveat text-base font-bold">
               Most popular
             </span>
