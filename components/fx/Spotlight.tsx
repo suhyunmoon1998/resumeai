@@ -23,7 +23,7 @@ export default function Spotlight({
       glow.style.opacity = "1";
       glow.style.background = `radial-gradient(600px circle at ${e.clientX - rect.left}px ${
         e.clientY - rect.top
-      }px, rgba(139, 92, 246, 0.14), transparent 55%)`;
+      }px, rgba(245, 158, 11, 0.14), transparent 55%)`;
     };
     const onLeave = () => {
       glow.style.opacity = "0";

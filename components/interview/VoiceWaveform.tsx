@@ -34,9 +34,9 @@ export default function VoiceWaveform({ active }: { active: boolean }) {
         const w = canvas.width;
         const h = canvas.height;
         const grad = ctx.createLinearGradient(0, 0, w, 0);
-        grad.addColorStop(0, "#6366F1");
-        grad.addColorStop(0.5, "#8B5CF6");
-        grad.addColorStop(1, "#D946EF");
+        grad.addColorStop(0, "#D97706");
+        grad.addColorStop(0.5, "#F59E0B");
+        grad.addColorStop(1, "#EA580C");
 
         const bars = 28;
         const step = Math.floor(data.length / bars);

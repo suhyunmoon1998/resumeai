@@ -46,16 +46,16 @@ export default function CloudAnimation({ state }: { state: CloudState }) {
 
         {state === "thinking" && (
           <div className="absolute -top-5 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden>
-            <span className="thinking-dot h-2.5 w-2.5 rounded-full bg-sky-400" />
-            <span className="thinking-dot h-2.5 w-2.5 rounded-full bg-sky-400" />
-            <span className="thinking-dot h-2.5 w-2.5 rounded-full bg-sky-400" />
+            <span className="thinking-dot h-2.5 w-2.5 rounded-full bg-amber-400" />
+            <span className="thinking-dot h-2.5 w-2.5 rounded-full bg-amber-400" />
+            <span className="thinking-dot h-2.5 w-2.5 rounded-full bg-amber-400" />
           </div>
         )}
 
         {state === "talking" && (
           <div className="absolute -bottom-6 left-1/2 flex h-6 -translate-x-1/2 items-end gap-1" aria-hidden>
             {[0, 1, 2, 3, 4].map((i) => (
-              <span key={i} className="wave-bar w-1.5 rounded-full bg-sky-400" style={{ height: "100%" }} />
+              <span key={i} className="wave-bar w-1.5 rounded-full bg-amber-400" style={{ height: "100%" }} />
             ))}
           </div>
         )}

@@ -41,7 +41,7 @@ export default function StylePicker({
             aria-label={`Choose template ${t.name}`}
             className={`card-hover flex flex-col overflow-hidden rounded-2xl border-2 bg-white/80 text-left ${
               selected === t.id
-                ? "border-violet-500 ring-2 ring-violet-200"
+                ? "border-amber-500 ring-2 ring-amber-200"
                 : "border-gray-200"
             }`}
           >

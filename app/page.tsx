@@ -24,7 +24,7 @@ function Squiggle() {
   return (
     <svg
       viewBox="0 0 300 20"
-      className="mx-auto mt-2 h-4 w-56 text-violet-400"
+      className="mx-auto mt-2 h-4 w-56 text-amber-500"
       aria-hidden
     >
       <path
