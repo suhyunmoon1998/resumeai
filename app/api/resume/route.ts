@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     })
     .select()
     .single();
-  if (error) return NextResponse.json({ error }, { status: 500 });
+  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ resume: data });
 }
 
@@ -37,7 +37,7 @@ export async function GET() {
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
-  if (error) return NextResponse.json({ error }, { status: 500 });
+  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ resumes: data });
 }
 
@@ -54,6 +54,6 @@ export async function DELETE(req: NextRequest) {
     .delete()
     .eq("id", id)
     .eq("user_id", user.id);
-  if (error) return NextResponse.json({ error }, { status: 500 });
+  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ ok: true });
 }

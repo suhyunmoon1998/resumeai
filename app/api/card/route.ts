@@ -10,6 +10,20 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
+  // A card may only reference a resume the caller owns — otherwise the public
+  // card page (which reads with the service role) would leak someone else's resume.
+  if (body.resumeId) {
+    const { data: owned } = await supabase
+      .from("resumes")
+      .select("id")
+      .eq("id", body.resumeId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!owned) {
+      return NextResponse.json({ error: "Resume not found" }, { status: 403 });
+    }
+  }
+
   // Upload card image to storage when a data URL is provided
   let cardImageUrl: string | undefined;
   if (body.imageDataUrl) {
@@ -41,7 +55,7 @@ export async function POST(req: NextRequest) {
     })
     .select()
     .single();
-  if (error) return NextResponse.json({ error }, { status: 500 });
+  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ card: data });
 }
 
@@ -57,6 +71,6 @@ export async function GET() {
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
-  if (error) return NextResponse.json({ error }, { status: 500 });
+  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ cards: data });
 }
