@@ -71,6 +71,8 @@ export interface CardSticker {
   rot: number;
 }
 
+export type PhotoFilter = "none" | "bw" | "faded";
+
 export interface CardPhoto {
   /** downscaled JPEG data URL */
   dataUrl: string;
@@ -79,6 +81,9 @@ export interface CardPhoto {
   y: number;
   /** diameter as a fraction of card width */
   size: number;
+  filter?: PhotoFilter;
+  /** ring color around the photo (defaults to white) */
+  ringColor?: string;
 }
 
 export interface CardBackground {

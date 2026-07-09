@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CardBackground, ResumeData } from "@/types";
-import { buildCardImage, downloadCanvasPng } from "@/lib/buildCardImage";
+import { buildCardBackImage, buildCardImage, downloadCanvasPng } from "@/lib/buildCardImage";
 import { buildVcard, downloadVcard } from "@/lib/buildVcard";
 import { useToast } from "@/components/ui/toast";
 
@@ -16,8 +16,11 @@ export default function QRShare({
   shareSlug: string | null;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const backContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const backCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [ready, setReady] = useState(false);
+  const [flipped, setFlipped] = useState(false);
   const { toast } = useToast();
 
   const shareUrl =
@@ -29,14 +32,23 @@ export default function QRShare({
     let cancelled = false;
     (async () => {
       try {
-        const canvas = await buildCardImage(data, background, shareUrl || "https://voiceresume.app");
+        const url = shareUrl || "https://voiceresume.app";
+        const [front, back] = await Promise.all([
+          buildCardImage(data, background, url),
+          buildCardBackImage(data, background, url),
+        ]);
         if (cancelled) return;
-        canvasRef.current = canvas;
-        canvas.className = "w-full rounded-2xl shadow-xl";
-        const el = containerRef.current;
-        if (el) {
-          el.innerHTML = "";
-          el.appendChild(canvas);
+        canvasRef.current = front;
+        backCanvasRef.current = back;
+        front.className = "w-full rounded-2xl shadow-xl";
+        back.className = "h-full w-full rounded-2xl shadow-xl";
+        if (containerRef.current) {
+          containerRef.current.innerHTML = "";
+          containerRef.current.appendChild(front);
+        }
+        if (backContainerRef.current) {
+          backContainerRef.current.innerHTML = "";
+          backContainerRef.current.appendChild(back);
         }
         setReady(true);
       } catch {
@@ -80,10 +92,11 @@ export default function QRShare({
   };
 
   const saveImage = () => {
-    if (canvasRef.current) {
+    const canvas = flipped ? backCanvasRef.current : canvasRef.current;
+    if (canvas) {
       downloadCanvasPng(
-        canvasRef.current,
-        `${(data.name || "card").replace(/\s+/g, "_")}_card.png`
+        canvas,
+        `${(data.name || "card").replace(/\s+/g, "_")}_card_${flipped ? "back" : "front"}.png`
       );
     }
   };
@@ -110,13 +123,25 @@ export default function QRShare({
         <p className="mt-1 text-gray-500 dark:text-gray-400">Scan the QR or share it anywhere.</p>
       </div>
 
-      <div ref={containerRef} aria-label="Business card preview">
-        {!ready && (
-          <div className="flex aspect-[7/4] w-full items-center justify-center rounded-2xl bg-gray-100 text-gray-400 dark:bg-gray-800">
-            Rendering card…
+      <div className="flip-scene">
+        <button
+          onClick={() => setFlipped((f) => !f)}
+          aria-label={flipped ? "Show card front" : "Show card back"}
+          className={`flip-inner block w-full text-left ${flipped ? "flipped" : ""}`}
+        >
+          <div ref={containerRef} className="flip-face" aria-label="Business card front">
+            {!ready && (
+              <div className="flex aspect-[7/4] w-full items-center justify-center rounded-2xl bg-gray-100 text-gray-400 dark:bg-gray-800">
+                Rendering card…
+              </div>
+            )}
           </div>
-        )}
+          <div ref={backContainerRef} className="flip-face flip-back" aria-label="Business card back" />
+        </button>
       </div>
+      <p className="text-center font-caveat text-xl text-gray-400">
+        tap the card to flip it over 🔄
+      </p>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {options.map((o) => (

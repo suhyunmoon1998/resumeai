@@ -145,6 +145,48 @@ async function drawImageBackground(
   });
 }
 
+/** Draw the chosen background onto a card canvas; returns the matching text color. */
+async function drawCardBase(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  background: CardBackground
+): Promise<string> {
+  if (background.type === "school" && background.colors) {
+    drawSchoolBackground(
+      ctx, w, h,
+      background.colors.primary,
+      background.colors.secondary,
+      background.bgStyle ?? "minimal",
+      background.watermark,
+      background.pattern
+    );
+    return "#fff";
+  }
+  if (background.type === "drawn" && background.dataUrl) {
+    ctx.fillStyle = "#FFF9C4";
+    ctx.beginPath();
+    ctx.roundRect(0, 0, w, h, 40);
+    ctx.fill();
+    await drawImageBackground(ctx, w, h, background.dataUrl);
+    return "#3E2D00";
+  }
+  const style = getCardStyle(background.styleId ?? "c1");
+  drawPresetBackground(ctx, w, h, background.color ?? style.bg, style.deco);
+  return style.tx;
+}
+
+const PHOTO_FILTERS: Record<string, string> = {
+  none: "none",
+  bw: "grayscale(1) contrast(1.05)",
+  faded: "sepia(0.45) saturate(0.85) contrast(0.92) brightness(1.05)",
+};
+
+/** CSS filter string for a photo filter id — shared with the editor preview. */
+export function photoFilterCss(filter?: string): string {
+  return PHOTO_FILTERS[filter ?? "none"] ?? "none";
+}
+
 export async function buildCardImage(
   data: ResumeData,
   background: CardBackground,
@@ -157,29 +199,7 @@ export async function buildCardImage(
   const w = CARD_W;
   const h = CARD_H;
 
-  let textColor = "#fff";
-
-  if (background.type === "school" && background.colors) {
-    drawSchoolBackground(
-      ctx, w, h,
-      background.colors.primary,
-      background.colors.secondary,
-      background.bgStyle ?? "minimal",
-      background.watermark,
-      background.pattern
-    );
-  } else if (background.type === "drawn" && background.dataUrl) {
-    ctx.fillStyle = "#FFF9C4";
-    ctx.beginPath();
-    ctx.roundRect(0, 0, w, h, 40);
-    ctx.fill();
-    await drawImageBackground(ctx, w, h, background.dataUrl);
-    textColor = "#3E2D00";
-  } else {
-    const style = getCardStyle(background.styleId ?? "c1");
-    drawPresetBackground(ctx, w, h, background.color ?? style.bg, style.deco);
-    textColor = style.tx;
-  }
+  const textColor = await drawCardBase(ctx, w, h, background);
 
   // ----- Left side: text -----
   const pad = 70;
@@ -260,7 +280,7 @@ export async function buildCardImage(
   ctx.fillText("VoiceResume", w - 40, h - 28);
   ctx.globalAlpha = 1;
 
-  // ----- Profile photo (circular, white ring) -----
+  // ----- Profile photo (circular, colored ring, optional filter) -----
   if (background.photo?.dataUrl) {
     const p = background.photo;
     await new Promise<void>((resolve) => {
@@ -273,17 +293,19 @@ export async function buildCardImage(
         ctx.beginPath();
         ctx.arc(cx, cy, r, 0, Math.PI * 2);
         ctx.clip();
+        ctx.filter = photoFilterCss(p.filter);
         // cover-fit the image into the circle
         const scale = Math.max((r * 2) / img.width, (r * 2) / img.height);
         const dw = img.width * scale;
         const dh = img.height * scale;
         ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+        ctx.filter = "none";
         ctx.restore();
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, r, 0, Math.PI * 2);
         ctx.lineWidth = Math.max(4, r * 0.06);
-        ctx.strokeStyle = "#ffffff";
+        ctx.strokeStyle = p.ringColor ?? "#ffffff";
         ctx.shadowColor = "rgba(0,0,0,0.25)";
         ctx.shadowBlur = 12;
         ctx.stroke();
@@ -308,6 +330,59 @@ export async function buildCardImage(
       ctx.restore();
     }
   }
+
+  return canvas;
+}
+
+/** Back side of the card: same background, one big centered QR + name. */
+export async function buildCardBackImage(
+  data: ResumeData,
+  background: CardBackground,
+  shareUrl: string
+): Promise<HTMLCanvasElement> {
+  const canvas = document.createElement("canvas");
+  canvas.width = CARD_W;
+  canvas.height = CARD_H;
+  const ctx = canvas.getContext("2d")!;
+  const w = CARD_W;
+  const h = CARD_H;
+
+  const textColor = await drawCardBase(ctx, w, h, background);
+
+  // Name above the QR
+  ctx.fillStyle = textColor;
+  ctx.textAlign = "center";
+  ctx.font = "italic bold 46px Georgia, serif";
+  ctx.fillText(data.name || "", w / 2, 110, w - 160);
+
+  // Big centered QR in a white rounded box
+  const qrBox = 320;
+  const qrX = (w - qrBox) / 2;
+  const qrY = (h - qrBox) / 2 + 10;
+  ctx.save();
+  ctx.fillStyle = "#fff";
+  ctx.shadowColor = "rgba(0,0,0,0.25)";
+  ctx.shadowBlur = 24;
+  ctx.beginPath();
+  ctx.roundRect(qrX, qrY, qrBox, qrBox, 28);
+  ctx.fill();
+  ctx.restore();
+
+  const qrCanvas = document.createElement("canvas");
+  await QRCode.toCanvas(qrCanvas, shareUrl, { width: qrBox - 44, margin: 0 });
+  ctx.drawImage(qrCanvas, qrX + 22, qrY + 22);
+
+  ctx.fillStyle = textColor;
+  ctx.font = "600 24px Inter, Arial, sans-serif";
+  ctx.globalAlpha = 0.85;
+  ctx.fillText("Scan to connect", w / 2, qrY + qrBox + 48);
+  ctx.globalAlpha = 1;
+
+  ctx.font = "18px Inter, Arial, sans-serif";
+  ctx.textAlign = "right";
+  ctx.globalAlpha = 0.5;
+  ctx.fillText("VoiceResume", w - 40, h - 28);
+  ctx.globalAlpha = 1;
 
   return canvas;
 }

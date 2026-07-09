@@ -1,9 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CardBackground, CardPhoto, CardSticker } from "@/types";
-import { drawSchoolBackground } from "@/lib/buildCardImage";
+import { CardBackground, CardPhoto, CardSticker, PhotoFilter } from "@/types";
+import { drawSchoolBackground, photoFilterCss } from "@/lib/buildCardImage";
 import { getCardStyle } from "@/lib/templates";
+
+const FILTERS: { id: PhotoFilter; label: string }[] = [
+  { id: "none", label: "Original" },
+  { id: "bw", label: "B&W" },
+  { id: "faded", label: "Faded" },
+];
 
 const PALETTE = [
   "⭐", "❤️", "🔥", "✨", "🌈", "🎓",
@@ -222,7 +228,7 @@ export default function StickerEditor({
             alt="Profile photo on card"
             onPointerDown={grab("photo")}
             draggable={false}
-            className={`absolute cursor-grab rounded-full border-2 border-white object-cover shadow-lg active:cursor-grabbing ${
+            className={`absolute cursor-grab rounded-full border-2 object-cover shadow-lg active:cursor-grabbing ${
               selected === "photo" ? "ring-4 ring-amber-400/80" : ""
             }`}
             style={{
@@ -231,6 +237,8 @@ export default function StickerEditor({
               width: `${Math.round(photo.size * boxWidth)}px`,
               height: `${Math.round(photo.size * boxWidth)}px`,
               transform: "translate(-50%, -50%)",
+              filter: photoFilterCss(photo.filter),
+              borderColor: photo.ringColor ?? "#ffffff",
             }}
           />
         )}
@@ -255,6 +263,49 @@ export default function StickerEditor({
           </span>
         ))}
       </div>
+
+      {/* Photo filter + ring color (when photo is selected) */}
+      {selected === "photo" && photo && (
+        <div className="flex flex-wrap items-center justify-center gap-2 rounded-xl bg-white/70 px-3 py-2 dark:bg-gray-800/70">
+          {FILTERS.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => onPhotoChange({ ...photo, filter: f.id })}
+              aria-label={`Photo filter ${f.label}`}
+              className={`rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm transition ${
+                (photo.filter ?? "none") === f.id
+                  ? "g-bg text-white"
+                  : "bg-white text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+          <span className="mx-1 h-5 w-px bg-gray-300 dark:bg-gray-600" aria-hidden />
+          {[
+            { color: "#ffffff", label: "White ring" },
+            { color: "#F59E0B", label: "Amber ring" },
+            ...(background.colors
+              ? [
+                  { color: background.colors.primary, label: "School primary ring" },
+                  { color: background.colors.secondary, label: "School secondary ring" },
+                ]
+              : []),
+          ].map((r) => (
+            <button
+              key={r.color}
+              onClick={() => onPhotoChange({ ...photo, ringColor: r.color })}
+              aria-label={r.label}
+              className={`h-7 w-7 rounded-full border-2 shadow-sm transition ${
+                (photo.ringColor ?? "#ffffff") === r.color
+                  ? "scale-110 border-gray-900 dark:border-gray-100"
+                  : "border-gray-300 dark:border-gray-600"
+              }`}
+              style={{ background: r.color }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Selected item toolbar */}
       {(sel || selected === "photo") && (
