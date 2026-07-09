@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CARD_STYLES } from "@/lib/templates";
-import { CardBackground, CardSticker, School } from "@/types";
+import { CardBackground, CardPhoto, CardSticker, School } from "@/types";
 import SchoolBackground from "@/components/card/SchoolBackground";
 import DrawCanvas from "@/components/card/DrawCanvas";
 import StickerEditor from "@/components/card/StickerEditor";
@@ -22,12 +22,18 @@ export default function CardPicker({
 }) {
   const [mode, setMode] = useState<Mode>("preset");
   const [stickers, setStickers] = useState<CardSticker[]>(background.stickers ?? []);
+  const [photo, setPhoto] = useState<CardPhoto | null>(background.photo ?? null);
 
-  // Background changes keep the stickers; sticker changes keep the background.
-  const setBackground = (bg: CardBackground) => onChange({ ...bg, stickers });
+  // Background changes keep the decorations; decoration changes keep the background.
+  const setBackground = (bg: CardBackground) =>
+    onChange({ ...bg, stickers, photo: photo ?? undefined });
   const updateStickers = (next: CardSticker[]) => {
     setStickers(next);
-    onChange({ ...background, stickers: next });
+    onChange({ ...background, stickers: next, photo: photo ?? undefined });
+  };
+  const updatePhoto = (next: CardPhoto | null) => {
+    setPhoto(next);
+    onChange({ ...background, stickers, photo: next ?? undefined });
   };
 
   return (
@@ -47,7 +53,7 @@ export default function CardPicker({
             ["preset", "🎨 Presets"],
             ["school", "🎓 School colors"],
             ["draw", "✏️ Draw"],
-            ["sticker", "🌟 Stickers"],
+            ["sticker", "🌟 Photo & stickers"],
           ] as [Mode, string][]
         ).map(([m, label]) => (
           <button
@@ -113,7 +119,9 @@ export default function CardPicker({
         <StickerEditor
           background={background}
           stickers={stickers}
+          photo={photo}
           onChange={updateStickers}
+          onPhotoChange={updatePhoto}
         />
       )}
 

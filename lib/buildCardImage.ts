@@ -260,6 +260,41 @@ export async function buildCardImage(
   ctx.fillText("VoiceResume", w - 40, h - 28);
   ctx.globalAlpha = 1;
 
+  // ----- Profile photo (circular, white ring) -----
+  if (background.photo?.dataUrl) {
+    const p = background.photo;
+    await new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const r = (p.size * w) / 2;
+        const cx = p.x * w;
+        const cy = p.y * h;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.clip();
+        // cover-fit the image into the circle
+        const scale = Math.max((r * 2) / img.width, (r * 2) / img.height);
+        const dw = img.width * scale;
+        const dh = img.height * scale;
+        ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+        ctx.restore();
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.lineWidth = Math.max(4, r * 0.06);
+        ctx.strokeStyle = "#ffffff";
+        ctx.shadowColor = "rgba(0,0,0,0.25)";
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.restore();
+        resolve();
+      };
+      img.onerror = () => resolve(); // skip a broken photo, keep the card
+      img.src = p.dataUrl;
+    });
+  }
+
   // ----- Stickers on top of everything -----
   if (background.stickers?.length) {
     for (const s of background.stickers) {

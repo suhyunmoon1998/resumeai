@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CardBackground, CardSticker } from "@/types";
+import { CardBackground, CardPhoto, CardSticker } from "@/types";
 import { drawSchoolBackground } from "@/lib/buildCardImage";
 import { getCardStyle } from "@/lib/templates";
 
@@ -10,23 +10,52 @@ const PALETTE = [
   "☁️", "😎", "🍀", "🎵", "🚀", "🌸",
 ];
 
+/** Downscale an uploaded image to keep the stored data URL small. */
+function fileToDataUrl(file: File, maxDim = 512): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * scale);
+      c.height = Math.round(img.height * scale);
+      c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Could not read image"));
+    };
+    img.src = url;
+  });
+}
+
+type Selection = number | "photo" | null;
+
 /**
- * Drag-and-drop emoji stickers over the chosen card background.
- * Positions are stored as 0–1 fractions so buildCardImage can
- * reproduce them exactly on the final 1050×600 canvas.
+ * Decorate the card: drag-and-drop emoji stickers and an optional circular
+ * profile photo over the chosen background. Positions are stored as 0–1
+ * fractions so buildCardImage reproduces them on the final 1050×600 canvas.
  */
 export default function StickerEditor({
   background,
   stickers,
+  photo,
   onChange,
+  onPhotoChange,
 }: {
   background: CardBackground;
   stickers: CardSticker[];
+  photo: CardPhoto | null;
   onChange: (stickers: CardSticker[]) => void;
+  onPhotoChange: (photo: CardPhoto | null) => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
-  const [selected, setSelected] = useState<number | null>(null);
-  const dragging = useRef<number | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [selected, setSelected] = useState<Selection>(null);
+  const dragging = useRef<Selection>(null);
   const [bgUrl, setBgUrl] = useState<string | null>(null);
   const [bgColor, setBgColor] = useState("#111111");
   const [boxWidth, setBoxWidth] = useState(360);
@@ -80,22 +109,36 @@ export default function StickerEditor({
     setSelected(stickers.length);
   };
 
-  const updateSelected = (patch: Partial<CardSticker>) => {
-    if (selected === null) return;
+  const uploadPhoto = async (file: File | undefined) => {
+    if (!file || !file.type.startsWith("image/")) return;
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      onPhotoChange({ dataUrl, x: 0.62, y: 0.32, size: 0.22 });
+      setSelected("photo");
+    } catch {
+      /* unreadable image — ignore */
+    }
+  };
+
+  const updateSticker = (patch: Partial<CardSticker>) => {
+    if (typeof selected !== "number") return;
     onChange(stickers.map((s, i) => (i === selected ? { ...s, ...patch } : s)));
   };
 
   const removeSelected = () => {
-    if (selected === null) return;
-    onChange(stickers.filter((_, i) => i !== selected));
+    if (selected === "photo") {
+      onPhotoChange(null);
+    } else if (typeof selected === "number") {
+      onChange(stickers.filter((_, i) => i !== selected));
+    }
     setSelected(null);
   };
 
-  const onPointerDown = (index: number) => (e: React.PointerEvent) => {
+  const grab = (target: Selection) => (e: React.PointerEvent) => {
     e.preventDefault();
     (e.target as Element).setPointerCapture(e.pointerId);
-    dragging.current = index;
-    setSelected(index);
+    dragging.current = target;
+    setSelected(target);
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -103,16 +146,19 @@ export default function StickerEditor({
     const rect = boxRef.current.getBoundingClientRect();
     const x = Math.min(0.97, Math.max(0.03, (e.clientX - rect.left) / rect.width));
     const y = Math.min(0.95, Math.max(0.05, (e.clientY - rect.top) / rect.height));
-    onChange(
-      stickers.map((s, i) => (i === dragging.current ? { ...s, x, y } : s))
-    );
+    if (dragging.current === "photo") {
+      if (photo) onPhotoChange({ ...photo, x, y });
+    } else {
+      const idx = dragging.current;
+      onChange(stickers.map((s, i) => (i === idx ? { ...s, x, y } : s)));
+    }
   };
 
   const onPointerUp = () => {
     dragging.current = null;
   };
 
-  const sel = selected !== null ? stickers[selected] : null;
+  const sel = typeof selected === "number" ? stickers[selected] : null;
 
   return (
     <div className="space-y-3">
@@ -120,8 +166,23 @@ export default function StickerEditor({
         Sticker time! 🌟 <span className="text-lg text-gray-400">tap to add · drag to move</span>
       </p>
 
-      {/* Palette */}
+      {/* Palette + photo upload */}
       <div className="flex flex-wrap justify-center gap-1.5">
+        <button
+          onClick={() => fileRef.current?.click()}
+          aria-label="Add a profile photo"
+          className="card-hover glass flex h-11 items-center justify-center gap-1.5 rounded-xl px-3 text-sm font-bold text-gray-700 dark:text-gray-300"
+        >
+          📷 {photo ? "Change photo" : "Add photo"}
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          aria-hidden
+          onChange={(e) => uploadPhoto(e.target.files?.[0])}
+        />
         {PALETTE.map((emoji) => (
           <button
             key={emoji}
@@ -134,7 +195,7 @@ export default function StickerEditor({
         ))}
       </div>
 
-      {/* Preview with draggable stickers */}
+      {/* Preview with draggable photo + stickers */}
       <div
         ref={boxRef}
         onPointerMove={onPointerMove}
@@ -146,17 +207,38 @@ export default function StickerEditor({
             ? { backgroundImage: `url(${bgUrl})`, backgroundSize: "cover" }
             : { background: bgColor }
         }
-        aria-label="Sticker placement preview"
+        aria-label="Card decoration preview"
       >
-        {stickers.length === 0 && (
+        {stickers.length === 0 && !photo && (
           <p className="absolute inset-0 flex items-center justify-center font-caveat text-2xl text-white/60">
-            your stickers go here ✨
+            your photo &amp; stickers go here ✨
           </p>
         )}
+
+        {photo && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={photo.dataUrl}
+            alt="Profile photo on card"
+            onPointerDown={grab("photo")}
+            draggable={false}
+            className={`absolute cursor-grab rounded-full border-2 border-white object-cover shadow-lg active:cursor-grabbing ${
+              selected === "photo" ? "ring-4 ring-amber-400/80" : ""
+            }`}
+            style={{
+              left: `${photo.x * 100}%`,
+              top: `${photo.y * 100}%`,
+              width: `${Math.round(photo.size * boxWidth)}px`,
+              height: `${Math.round(photo.size * boxWidth)}px`,
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        )}
+
         {stickers.map((s, i) => (
           <span
             key={i}
-            onPointerDown={onPointerDown(i)}
+            onPointerDown={grab(i)}
             role="button"
             aria-label={`Sticker ${s.emoji}`}
             className={`absolute cursor-grab leading-none active:cursor-grabbing ${
@@ -174,34 +256,46 @@ export default function StickerEditor({
         ))}
       </div>
 
-      {/* Selected sticker toolbar */}
-      {sel && (
+      {/* Selected item toolbar */}
+      {(sel || selected === "photo") && (
         <div className="flex items-center justify-center gap-2 rounded-xl bg-white/70 px-3 py-2 dark:bg-gray-800/70">
-          <span className="text-xl" aria-hidden>{sel.emoji}</span>
+          <span className="text-xl" aria-hidden>
+            {selected === "photo" ? "📷" : sel?.emoji}
+          </span>
           <button
-            onClick={() => updateSelected({ size: Math.min(0.3, sel.size + 0.02) })}
-            aria-label="Bigger sticker"
+            onClick={() =>
+              selected === "photo"
+                ? photo && onPhotoChange({ ...photo, size: Math.min(0.45, photo.size + 0.03) })
+                : sel && updateSticker({ size: Math.min(0.3, sel.size + 0.02) })
+            }
+            aria-label="Bigger"
             className="rounded-lg bg-white px-2.5 py-1 text-sm font-bold shadow-sm dark:bg-gray-700 dark:text-gray-200"
           >
             ➕
           </button>
           <button
-            onClick={() => updateSelected({ size: Math.max(0.04, sel.size - 0.02) })}
-            aria-label="Smaller sticker"
+            onClick={() =>
+              selected === "photo"
+                ? photo && onPhotoChange({ ...photo, size: Math.max(0.1, photo.size - 0.03) })
+                : sel && updateSticker({ size: Math.max(0.04, sel.size - 0.02) })
+            }
+            aria-label="Smaller"
             className="rounded-lg bg-white px-2.5 py-1 text-sm font-bold shadow-sm dark:bg-gray-700 dark:text-gray-200"
           >
             ➖
           </button>
-          <button
-            onClick={() => updateSelected({ rot: sel.rot + 15 })}
-            aria-label="Rotate sticker"
-            className="rounded-lg bg-white px-2.5 py-1 text-sm font-bold shadow-sm dark:bg-gray-700 dark:text-gray-200"
-          >
-            🔄
-          </button>
+          {sel && (
+            <button
+              onClick={() => updateSticker({ rot: sel.rot + 15 })}
+              aria-label="Rotate sticker"
+              className="rounded-lg bg-white px-2.5 py-1 text-sm font-bold shadow-sm dark:bg-gray-700 dark:text-gray-200"
+            >
+              🔄
+            </button>
+          )}
           <button
             onClick={removeSelected}
-            aria-label="Remove sticker"
+            aria-label="Remove"
             className="rounded-lg bg-red-100 px-2.5 py-1 text-sm font-bold text-red-600 shadow-sm dark:bg-red-900/50 dark:text-red-300"
           >
             🗑

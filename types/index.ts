@@ -71,6 +71,16 @@ export interface CardSticker {
   rot: number;
 }
 
+export interface CardPhoto {
+  /** downscaled JPEG data URL */
+  dataUrl: string;
+  /** center position as a fraction of card width/height (0–1) */
+  x: number;
+  y: number;
+  /** diameter as a fraction of card width */
+  size: number;
+}
+
 export interface CardBackground {
   type: "preset" | "school" | "drawn" | "minimal" | "pattern";
   styleId?: string;
@@ -82,6 +92,7 @@ export interface CardBackground {
   dataUrl?: string;
   color?: string;
   stickers?: CardSticker[];
+  photo?: CardPhoto;
 }
 
 export interface SavedCard {
