@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { CARD_STYLES } from "@/lib/templates";
-import { CardBackground, School } from "@/types";
+import { CardBackground, CardSticker, School } from "@/types";
 import SchoolBackground from "@/components/card/SchoolBackground";
 import DrawCanvas from "@/components/card/DrawCanvas";
+import StickerEditor from "@/components/card/StickerEditor";
 
-type Mode = "preset" | "school" | "draw";
+type Mode = "preset" | "school" | "draw" | "sticker";
 
 export default function CardPicker({
   defaultSchool,
@@ -20,22 +21,33 @@ export default function CardPicker({
   onDone: () => void;
 }) {
   const [mode, setMode] = useState<Mode>("preset");
+  const [stickers, setStickers] = useState<CardSticker[]>(background.stickers ?? []);
+
+  // Background changes keep the stickers; sticker changes keep the background.
+  const setBackground = (bg: CardBackground) => onChange({ ...bg, stickers });
+  const updateStickers = (next: CardSticker[]) => {
+    setStickers(next);
+    onChange({ ...background, stickers: next });
+  };
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-6 py-10">
       <div className="text-center">
-        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Design your <span className="g-text">card</span></h1>
+        <h1 className="font-display text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          Design your <span className="g-text">card</span>
+        </h1>
         <p className="mt-1 text-gray-500 dark:text-gray-400">
-          Pick a preset, use your school colors, or draw your own.
+          Pick a background, then decorate it with stickers.
         </p>
       </div>
 
-      <div className="flex justify-center gap-2">
+      <div className="flex flex-wrap justify-center gap-2">
         {(
           [
             ["preset", "🎨 Presets"],
             ["school", "🎓 School colors"],
             ["draw", "✏️ Draw"],
+            ["sticker", "🌟 Stickers"],
           ] as [Mode, string][]
         ).map(([m, label]) => (
           <button
@@ -49,6 +61,7 @@ export default function CardPicker({
             }`}
           >
             {label}
+            {m === "sticker" && stickers.length > 0 ? ` (${stickers.length})` : ""}
           </button>
         ))}
       </div>
@@ -59,13 +72,13 @@ export default function CardPicker({
             <button
               key={s.id}
               onClick={() =>
-                onChange({ type: "preset", styleId: s.id, color: s.bg })
+                setBackground({ type: "preset", styleId: s.id, color: s.bg })
               }
               aria-label={`Card style ${s.name}`}
               className={`overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5 ${
                 background.type === "preset" && background.styleId === s.id
-                  ? "border-gray-900"
-                  : "border-gray-200"
+                  ? "border-amber-500 ring-2 ring-amber-200"
+                  : "border-gray-200 dark:border-gray-700"
               }`}
             >
               <div
@@ -87,12 +100,20 @@ export default function CardPicker({
       )}
 
       {mode === "school" && (
-        <SchoolBackground defaultSchool={defaultSchool} onChange={onChange} />
+        <SchoolBackground defaultSchool={defaultSchool} onChange={setBackground} />
       )}
 
       {mode === "draw" && (
         <DrawCanvas
-          onChange={(dataUrl) => onChange({ type: "drawn", dataUrl })}
+          onChange={(dataUrl) => setBackground({ type: "drawn", dataUrl })}
+        />
+      )}
+
+      {mode === "sticker" && (
+        <StickerEditor
+          background={background}
+          stickers={stickers}
+          onChange={updateStickers}
         />
       )}
 

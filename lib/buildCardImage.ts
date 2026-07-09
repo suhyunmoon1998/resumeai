@@ -260,6 +260,20 @@ export async function buildCardImage(
   ctx.fillText("VoiceResume", w - 40, h - 28);
   ctx.globalAlpha = 1;
 
+  // ----- Stickers on top of everything -----
+  if (background.stickers?.length) {
+    for (const s of background.stickers) {
+      ctx.save();
+      ctx.translate(s.x * w, s.y * h);
+      ctx.rotate((s.rot * Math.PI) / 180);
+      ctx.font = `${Math.round(s.size * w)}px serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(s.emoji, 0, 0);
+      ctx.restore();
+    }
+  }
+
   return canvas;
 }
 

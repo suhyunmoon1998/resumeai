@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { createServiceClient } from "@/lib/supabase/server";
 import { ResumeData, SavedCard } from "@/types";
 import PublicCardView from "@/components/card/PublicCardView";
+import DeliveryReveal from "@/components/card/DeliveryReveal";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,7 @@ export default async function PublicCardPage({
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-950 px-6 py-12">
+      <DeliveryReveal />
       <PublicCardView card={typedCard} resumeData={resumeData} />
       <p className="mt-8 text-xs text-gray-600">
         Made with <span className="font-caveat-brush text-gray-400">☁️ VoiceResume</span>

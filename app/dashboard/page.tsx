@@ -8,6 +8,7 @@ import LatestResumeHero from "@/components/dashboard/LatestResumeHero";
 import SchoolPicker from "@/components/school/SchoolPicker";
 import SignOutButton from "@/components/auth/SignOutButton";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import ScanListener from "@/components/dashboard/ScanListener";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="mesh-bg min-h-screen">
+      <ScanListener userId={user.id} />
       <header className="sticky top-0 z-50 px-4 pt-4">
         <div className="glass mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
           <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">

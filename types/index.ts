@@ -60,6 +60,17 @@ export interface ResumeTemplate {
 export type BackgroundPattern = "dots" | "lines" | "diagonal" | "crosshatch" | "grid";
 export type BackgroundStyle = "minimal" | "watermark" | "pattern";
 
+export interface CardSticker {
+  emoji: string;
+  /** position as a fraction of card width/height (0–1) */
+  x: number;
+  y: number;
+  /** size as a fraction of card width */
+  size: number;
+  /** rotation in degrees */
+  rot: number;
+}
+
 export interface CardBackground {
   type: "preset" | "school" | "drawn" | "minimal" | "pattern";
   styleId?: string;
@@ -70,6 +81,7 @@ export interface CardBackground {
   bgStyle?: BackgroundStyle;
   dataUrl?: string;
   color?: string;
+  stickers?: CardSticker[];
 }
 
 export interface SavedCard {

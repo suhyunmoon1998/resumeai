@@ -263,7 +263,7 @@ export default function InterviewPage() {
 
   if (screen === "role") {
     return (
-      <main className="mesh-bg min-h-screen">
+      <main className="mesh-bg screen-fade min-h-screen">
         <TopBar />
         <RolePicker onSelect={startInterview} />
       </main>
@@ -272,6 +272,7 @@ export default function InterviewPage() {
 
   if (screen === "interview") {
     return (
+      <div className="screen-fade">
       <InterviewLayout
         phone={
           <div className="flex w-full flex-1 flex-col items-center justify-between gap-6">
@@ -364,12 +365,13 @@ export default function InterviewPage() {
           />
         }
       />
+      </div>
     );
   }
 
   if (screen === "style") {
     return (
-      <main className="mesh-bg min-h-screen">
+      <main className="mesh-bg screen-fade min-h-screen">
         <TopBar />
         <StylePicker
           selected={templateId}
@@ -391,7 +393,7 @@ export default function InterviewPage() {
 
   if (screen === "done") {
     return (
-      <main className="mesh-bg flex min-h-screen flex-col items-center justify-center px-6">
+      <main className="mesh-bg screen-fade flex min-h-screen flex-col items-center justify-center px-6">
         <Confetti />
         <TopBar />
         <div className="w-full max-w-md space-y-6 text-center">
@@ -431,7 +433,7 @@ export default function InterviewPage() {
 
   if (screen === "card") {
     return (
-      <main className="mesh-bg min-h-screen">
+      <main className="mesh-bg screen-fade min-h-screen">
         <TopBar />
         <CardPicker
           defaultSchool={school}
@@ -445,7 +447,7 @@ export default function InterviewPage() {
 
   // screen === "qr"
   return (
-    <main className="mesh-bg min-h-screen">
+    <main className="mesh-bg screen-fade min-h-screen">
       <Confetti />
       <TopBar />
       {resumeData && (
