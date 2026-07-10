@@ -1,12 +1,11 @@
 -- ============================================================
--- VoiceResume — ONE-SHOT SETUP
+-- VoiceResume — ONE-SHOT SETUP (idempotent: safe to run many times)
 -- Supabase Dashboard → SQL Editor → paste this whole file → Run
--- (combines migrations 001 + 002 and creates storage buckets)
 -- ============================================================
 
 -- ---------- Tables ----------
 
-CREATE TABLE schools (
+CREATE TABLE IF NOT EXISTS schools (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name          TEXT NOT NULL,
   short_name    TEXT,
@@ -18,9 +17,9 @@ CREATE TABLE schools (
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_schools_name ON schools USING gin(to_tsvector('english', name));
+CREATE INDEX IF NOT EXISTS idx_schools_name ON schools USING gin(to_tsvector('english', name));
 
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id              UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email           TEXT UNIQUE NOT NULL,
   full_name       TEXT,
@@ -31,7 +30,7 @@ CREATE TABLE profiles (
   created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE resumes (
+CREATE TABLE IF NOT EXISTS resumes (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id      UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   title        TEXT,
@@ -43,7 +42,7 @@ CREATE TABLE resumes (
   updated_at   TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE cards (
+CREATE TABLE IF NOT EXISTS cards (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id          UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   resume_id        UUID REFERENCES resumes(id) ON DELETE SET NULL,
@@ -64,6 +63,12 @@ ALTER TABLE resumes  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cards    ENABLE ROW LEVEL SECURITY;
 ALTER TABLE schools  ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "own profile"    ON profiles;
+DROP POLICY IF EXISTS "own resumes"    ON resumes;
+DROP POLICY IF EXISTS "own cards"      ON cards;
+DROP POLICY IF EXISTS "public cards"   ON cards;
+DROP POLICY IF EXISTS "public schools" ON schools;
+
 CREATE POLICY "own profile"    ON profiles FOR ALL USING (auth.uid() = id);
 CREATE POLICY "own resumes"    ON resumes  FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "own cards"      ON cards    FOR ALL USING (auth.uid() = user_id);
@@ -82,6 +87,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 
@@ -95,7 +101,12 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ---------- Realtime (owner gets "someone received your card" toast) ----------
 
-ALTER PUBLICATION supabase_realtime ADD TABLE public.cards;
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.cards;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;  -- already added — fine
+END $$;
 
 -- ---------- Storage buckets + policies ----------
 
@@ -107,7 +118,9 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('resumes', 'resumes', false)
 ON CONFLICT (id) DO NOTHING;
 
--- signed-in users may upload card images into their own folder only
+DROP POLICY IF EXISTS "card images upload" ON storage.objects;
+DROP POLICY IF EXISTS "card images read"   ON storage.objects;
+
 CREATE POLICY "card images upload" ON storage.objects
   FOR INSERT TO authenticated
   WITH CHECK (
@@ -118,7 +131,7 @@ CREATE POLICY "card images upload" ON storage.objects
 CREATE POLICY "card images read" ON storage.objects
   FOR SELECT USING (bucket_id = 'card-images');
 
--- ---------- Seed schools & companies ----------
+-- ---------- Seed schools & companies (skips rows that already exist) ----------
 
 INSERT INTO schools (name, short_name, type, domain, colors) VALUES
 ('MIT','MIT','university','mit.edu','{"primary":"#A31F34","secondary":"#8A8B8C","text":"#fff"}'),
@@ -147,4 +160,7 @@ INSERT INTO schools (name, short_name, type, domain, colors) VALUES
 ('Amazon','Amazon','company','amazon.com','{"primary":"#232F3E","secondary":"#FF9900","text":"#fff"}'),
 ('Microsoft','Microsoft','company','microsoft.com','{"primary":"#00A4EF","secondary":"#7FBA00","text":"#fff"}'),
 ('Netflix','Netflix','company','netflix.com','{"primary":"#E50914","secondary":"#B81D24","text":"#fff"}'),
-('Anthropic','Anthropic','company','anthropic.com','{"primary":"#CC785C","secondary":"#191919","text":"#fff"}');
+('Anthropic','Anthropic','company','anthropic.com','{"primary":"#CC785C","secondary":"#191919","text":"#fff"}')
+ON CONFLICT (domain) DO NOTHING;
+
+-- ---------- Done! You should see: Success. No rows returned ----------
