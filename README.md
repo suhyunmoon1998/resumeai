@@ -2,6 +2,10 @@
 
 **Just talk. Watch it write itself.**
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsuhyunmoon1998%2Fresumeai&project-name=voiceresume&repository-name=voiceresume&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,ANTHROPIC_API_KEY,NEXT_PUBLIC_APP_URL&envDescription=Supabase%20URL%2Fkeys%2C%20Anthropic%20API%20key%2C%20and%20your%20deployed%20URL)
+
+👉 **한국어 배포 가이드: [DEPLOY.md](./DEPLOY.md)** — Supabase 원샷 SQL([supabase/setup.sql](./supabase/setup.sql)) 포함, 약 15분 소요.
+
 Sign in with Google, pick your school or company, answer 9–12 AI voice interview questions, and get a polished resume + QR business card. Card backgrounds use your school's official colors with watermark, pattern, or minimal styles.
 
 ## Stack
