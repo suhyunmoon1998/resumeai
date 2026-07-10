@@ -38,9 +38,9 @@ export default async function DashboardPage() {
   const firstName = (profile?.full_name || user.email || "").split(" ")[0];
 
   return (
-    <main className="mesh-bg min-h-screen">
+    <main className="mesh-bg min-h-dvh">
       <ScanListener userId={user.id} />
-      <header className="sticky top-0 z-50 px-4 pt-4">
+      <header className="safe-top sticky top-0 z-50 px-4">
         <div className="glass mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
           <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
             <span aria-hidden>☁️</span> VoiceResume

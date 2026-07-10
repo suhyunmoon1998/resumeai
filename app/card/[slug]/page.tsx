@@ -29,7 +29,7 @@ export default async function PublicCardPage({
   const resumeData = typedCard.resume?.data ?? null;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-950 px-6 py-12">
+    <main className="flex min-h-dvh flex-col items-center justify-center bg-gray-950 px-6 py-12">
       <DeliveryReveal />
       <PublicCardView card={typedCard} resumeData={resumeData} />
       <p className="mt-8 text-xs text-gray-600">

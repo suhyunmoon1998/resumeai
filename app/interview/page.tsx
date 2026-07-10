@@ -263,7 +263,7 @@ export default function InterviewPage() {
 
   if (screen === "role") {
     return (
-      <main className="mesh-bg screen-fade min-h-screen">
+      <main className="mesh-bg screen-fade min-h-dvh">
         <TopBar />
         <RolePicker onSelect={startInterview} />
       </main>
@@ -371,7 +371,7 @@ export default function InterviewPage() {
 
   if (screen === "style") {
     return (
-      <main className="mesh-bg screen-fade min-h-screen">
+      <main className="mesh-bg screen-fade min-h-dvh">
         <TopBar />
         <StylePicker
           selected={templateId}
@@ -393,7 +393,7 @@ export default function InterviewPage() {
 
   if (screen === "done") {
     return (
-      <main className="mesh-bg screen-fade flex min-h-screen flex-col items-center justify-center px-6">
+      <main className="mesh-bg screen-fade flex min-h-dvh flex-col items-center justify-center px-6">
         <Confetti />
         <TopBar />
         <div className="w-full max-w-md space-y-6 text-center">
@@ -433,7 +433,7 @@ export default function InterviewPage() {
 
   if (screen === "card") {
     return (
-      <main className="mesh-bg screen-fade min-h-screen">
+      <main className="mesh-bg screen-fade min-h-dvh">
         <TopBar />
         <CardPicker
           defaultSchool={school}
@@ -447,7 +447,7 @@ export default function InterviewPage() {
 
   // screen === "qr"
   return (
-    <main className="mesh-bg screen-fade min-h-screen">
+    <main className="mesh-bg screen-fade min-h-dvh">
       <Confetti />
       <TopBar />
       {resumeData && (
@@ -467,7 +467,7 @@ export default function InterviewPage() {
 
 function TopBar() {
   return (
-    <header className="sticky top-0 z-50 px-4 pt-4">
+    <header className="safe-top sticky top-0 z-50 px-4">
       <div className="glass mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
         <Link href="/dashboard" className="font-display text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
           ☁️ VoiceResume

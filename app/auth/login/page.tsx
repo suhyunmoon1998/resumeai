@@ -3,7 +3,7 @@ import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 export default function LoginPage() {
   return (
-    <main className="mesh-bg relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
+    <main className="mesh-bg relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6">
       <div aria-hidden className="blob left-[-6rem] top-[-4rem] h-80 w-80 bg-yellow-300" />
       <div aria-hidden className="blob blob-2 bottom-[-6rem] right-[-4rem] h-80 w-80 bg-amber-300" />
 

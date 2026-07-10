@@ -46,9 +46,9 @@ export default async function LandingPage() {
   if (user) redirect("/dashboard");
 
   return (
-    <main className="mesh-bg relative min-h-screen overflow-hidden text-gray-900 dark:text-gray-100">
+    <main className="mesh-bg relative min-h-dvh overflow-hidden text-gray-900 dark:text-gray-100">
       {/* Nav */}
-      <header className="sticky top-0 z-50 px-4 pt-4">
+      <header className="safe-top sticky top-0 z-50 px-4">
         <nav className="glass mx-auto flex max-w-4xl items-center justify-between rounded-2xl px-5 py-3 shadow-sm">
           <span className="font-caveat-brush text-2xl">☁️ VoiceResume</span>
           <div className="flex items-center gap-4">
