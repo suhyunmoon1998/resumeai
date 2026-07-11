@@ -3,10 +3,29 @@ import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import CustomCursor from "@/components/fx/CustomCursor";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://voiceresume-zeta.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   title: "VoiceResume — Just talk. Watch it write itself.",
   description:
     "Answer AI voice interview questions and get a polished resume plus a QR business card in minutes.",
+  openGraph: {
+    type: "website",
+    url: APP_URL,
+    siteName: "VoiceResume",
+    title: "VoiceResume — Just talk. Watch it write itself.",
+    description:
+      "Answer AI voice interview questions and get a polished resume plus a QR business card in minutes.",
+    images: ["/icons/icon-512.png"],
+  },
+  twitter: {
+    card: "summary",
+    title: "VoiceResume — Just talk. Watch it write itself.",
+    description:
+      "Answer AI voice interview questions and get a polished resume plus a QR business card in minutes.",
+    images: ["/icons/icon-512.png"],
+  },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

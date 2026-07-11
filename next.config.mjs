@@ -1,5 +1,24 @@
 /** @type {import('next').NextConfig} */
+const isDev = process.env.NODE_ENV === "development";
+
+// 'unsafe-inline' scripts are required by Next's inline bootstrap and the
+// theme-init snippet in app/layout.tsx; everything external is still blocked.
+// 'unsafe-eval' + ws: are dev-server only (HMR).
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com",
+  "font-src 'self' data:",
+  `connect-src 'self' https://*.supabase.co wss://*.supabase.co${isDev ? " ws:" : ""}`,
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
   {
     key: "Strict-Transport-Security",
     value: "max-age=63072000; includeSubDomains; preload",
