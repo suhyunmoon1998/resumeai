@@ -11,10 +11,23 @@ const MAX_CONTENT_CHARS = 20_000;
 // Simple per-user rate limit (per server instance).
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX_REQUESTS = 5;
+const SWEEP_INTERVAL_MS = 5 * 60_000;
 const hits = new Map<string, number[]>();
+let lastSweep = Date.now();
+
+/** Drop users whose requests are all outside the window, so the map
+ *  can't grow unbounded on a long-lived server instance. */
+function sweepStaleEntries(now: number) {
+  if (now - lastSweep < SWEEP_INTERVAL_MS) return;
+  lastSweep = now;
+  for (const [id, times] of hits) {
+    if (times.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(id);
+  }
+}
 
 function isRateLimited(userId: string): boolean {
   const now = Date.now();
+  sweepStaleEntries(now);
   const recent = (hits.get(userId) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
   if (recent.length >= RATE_MAX_REQUESTS) {
     hits.set(userId, recent);

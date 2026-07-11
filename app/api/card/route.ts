@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
+  const body = await req.json().catch(() => null);
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
 
   // A card may only reference a resume the caller owns — otherwise the public
   // card page (which reads with the service role) would leak someone else's resume.
@@ -55,7 +58,7 @@ export async function POST(req: NextRequest) {
     })
     .select()
     .single();
-  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
+  if (error) { console.error("card insert failed:", error.code, error.message); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ card: data });
 }
 
@@ -71,6 +74,6 @@ export async function GET() {
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
-  if (error) { console.error(error); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
+  if (error) { console.error("card list failed:", error.code, error.message); return NextResponse.json({ error: "Request failed" }, { status: 500 }); }
   return NextResponse.json({ cards: data });
 }

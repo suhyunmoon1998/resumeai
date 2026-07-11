@@ -22,6 +22,16 @@ async function callClaude(prompt: string, maxTokens: number): Promise<string> {
     .trim();
 }
 
+/** The model occasionally returns malformed JSON — surface that as a normal,
+ *  catchable error instead of an uncaught SyntaxError. */
+function parseJson<T>(raw: string): T {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    throw new Error("AI returned an invalid response — please try again");
+  }
+}
+
 export async function generateResume(
   answers: Record<string, string>,
   questions: { key: string; speak: string }[]
@@ -37,7 +47,7 @@ export async function generateResume(
     `\n\nRules: only use mentioned info, 2-3 bullets per role, English, concise.`;
 
   const raw = await callClaude(prompt, 1200);
-  return JSON.parse(raw) as ResumeData;
+  return parseJson<ResumeData>(raw);
 }
 
 export async function getTemplateRecommendation(
@@ -64,5 +74,5 @@ Template IDs and use cases:
 Return ONLY JSON: {"templateId":"","reason":""}`;
 
   const raw = await callClaude(prompt, 80);
-  return JSON.parse(raw) as { templateId: string; reason: string };
+  return parseJson<{ templateId: string; reason: string }>(raw);
 }
