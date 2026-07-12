@@ -9,6 +9,7 @@ import SchoolPicker from "@/components/school/SchoolPicker";
 import SignOutButton from "@/components/auth/SignOutButton";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import ScanListener from "@/components/dashboard/ScanListener";
+import WeatherCloud from "@/components/dashboard/WeatherCloud";
 
 export const dynamic = "force-dynamic";
 
@@ -76,18 +77,29 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-5xl px-6 py-10">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <h1 className="font-caveat-brush text-5xl text-gray-900 dark:text-gray-100">
             Hey {firstName} 👋
           </h1>
-          <Link
-            href="/interview"
-            aria-label="Create a new resume"
-            className="g-bg glow-btn inline-flex h-11 items-center rounded-xl px-5 text-sm font-bold text-white"
-          >
-            + New Resume
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/map"
+              aria-label="See companies near me"
+              className="glass card-hover inline-flex h-11 items-center rounded-xl px-4 text-sm font-bold text-gray-700 dark:text-gray-300"
+            >
+              🗺️ Near me
+            </Link>
+            <Link
+              href="/interview"
+              aria-label="Create a new resume"
+              className="g-bg glow-btn inline-flex h-11 items-center rounded-xl px-5 text-sm font-bold text-white"
+            >
+              + New Resume
+            </Link>
+          </div>
         </div>
+
+        <WeatherCloud firstName={firstName} />
 
         {resumes.length > 0 && <LatestResumeHero resume={resumes[0]} />}
 

@@ -5,6 +5,7 @@ import { CardBackground, ResumeData } from "@/types";
 import { buildCardBackImage, buildCardImage, downloadCanvasPng } from "@/lib/buildCardImage";
 import { buildVcard, downloadVcard } from "@/lib/buildVcard";
 import { useToast } from "@/components/ui/toast";
+import EventMode from "@/components/card/EventMode";
 
 export default function QRShare({
   data,
@@ -21,6 +22,7 @@ export default function QRShare({
   const backCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [ready, setReady] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [eventMode, setEventMode] = useState(false);
   const { toast } = useToast();
 
   const shareUrl =
@@ -108,7 +110,16 @@ export default function QRShare({
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
 
+  const openEventMode = () => {
+    if (!shareSlug) {
+      toast("Card not saved yet", "error");
+      return;
+    }
+    setEventMode(true);
+  };
+
   const options = [
+    { icon: "🎪", label: "Event mode", onClick: openEventMode },
     { icon: "📤", label: "Share card", onClick: shareCard },
     { icon: "👤", label: "Save contact", onClick: () => downloadVcard(data) },
     { icon: "🔗", label: "Copy link", onClick: copyLink },
@@ -143,7 +154,16 @@ export default function QRShare({
         tap the card to flip it over 🔄
       </p>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+      {eventMode && shareSlug && (
+        <EventMode
+          data={data}
+          shareSlug={shareSlug}
+          shareUrl={shareUrl}
+          onClose={() => setEventMode(false)}
+        />
+      )}
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
         {options.map((o) => (
           <button
             key={o.label}

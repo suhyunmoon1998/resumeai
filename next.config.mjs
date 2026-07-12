@@ -8,9 +8,11 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com",
+  // OSM tiles feed the company map; Open-Meteo (weather) and Overpass
+  // (nearby companies) are fetched directly from the browser.
+  "img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com https://*.tile.openstreetmap.org",
   "font-src 'self' data:",
-  `connect-src 'self' https://*.supabase.co wss://*.supabase.co${isDev ? " ws:" : ""}`,
+  `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://overpass-api.de${isDev ? " ws:" : ""}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
