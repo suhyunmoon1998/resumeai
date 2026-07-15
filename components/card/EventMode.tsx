@@ -5,6 +5,52 @@ import QRCode from "qrcode";
 import { ResumeData } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
+type ThemeOption = {
+  name: string;
+  gradient: string;
+  glowColor: string;
+  icon: string;
+};
+
+const THEMES: Record<string, ThemeOption> = {
+  vibrant: {
+    name: "Vibrant",
+    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)",
+    glowColor: "rgba(240,147,251,0.4)",
+    icon: "✨",
+  },
+  professional: {
+    name: "Professional",
+    gradient: "linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7aa8d1 100%)",
+    glowColor: "rgba(122,168,209,0.4)",
+    icon: "💼",
+  },
+  warm: {
+    name: "Warm",
+    gradient: "linear-gradient(135deg, #f97316 0%, #ea580c 50%, #fbbf24 100%)",
+    glowColor: "rgba(251,191,36,0.4)",
+    icon: "🔥",
+  },
+  minimal: {
+    name: "Minimal",
+    gradient: "linear-gradient(135deg, #1f2937 0%, #111827 50%, #0f172a 100%)",
+    glowColor: "rgba(148,163,184,0.4)",
+    icon: "⚫",
+  },
+  fresh: {
+    name: "Fresh",
+    gradient: "linear-gradient(135deg, #10b981 0%, #059669 50%, #0891b2 100%)",
+    glowColor: "rgba(8,145,178,0.4)",
+    icon: "🌿",
+  },
+  sunset: {
+    name: "Sunset",
+    gradient: "linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #fbbf24 100%)",
+    glowColor: "rgba(244,63,94,0.4)",
+    icon: "🌅",
+  },
+};
+
 /**
  * Fullscreen QR for handing out your card at events: max-contrast QR,
  * screen kept awake, and a live counter that ticks up every time
@@ -24,6 +70,8 @@ export default function EventMode({
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [scans, setScans] = useState(0);
   const [pop, setPop] = useState(false);
+  const [showThemePicker, setShowThemePicker] = useState(false);
+  const [theme, setTheme] = useState<keyof typeof THEMES>("vibrant");
   const wakeLock = useRef<{ release: () => Promise<void> } | null>(null);
 
   // Big high-contrast QR
@@ -77,10 +125,12 @@ export default function EventMode({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  const currentTheme = THEMES[theme];
+
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-[calc(1rem+env(safe-area-inset-top))]"
       style={{
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)",
+        background: currentTheme.gradient,
         backgroundSize: "400% 400%",
         animation: "gradientShift 15s ease infinite"
       }}>
@@ -105,13 +155,48 @@ export default function EventMode({
         }
       `}</style>
 
-      <button
-        onClick={onClose}
-        aria-label="Exit event mode"
-        className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] rounded-full bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all"
-      >
-        ✕ Close
-      </button>
+      <div className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] flex gap-2">
+        <button
+          onClick={() => setShowThemePicker(!showThemePicker)}
+          aria-label="Theme picker"
+          className="rounded-full bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all"
+        >
+          🎨 Theme
+        </button>
+        <button
+          onClick={onClose}
+          aria-label="Exit event mode"
+          className="rounded-full bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all"
+        >
+          ✕ Close
+        </button>
+      </div>
+
+      {/* Theme Picker */}
+      {showThemePicker && (
+        <div className="absolute left-4 top-[calc(1rem+env(safe-area-inset-top))] bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 z-50">
+          <p className="text-sm font-semibold text-gray-700 mb-3">Choose a theme</p>
+          <div className="grid grid-cols-2 gap-2 min-w-max">
+            {Object.entries(THEMES).map(([key, themeOption]) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setTheme(key as keyof typeof THEMES);
+                  setShowThemePicker(false);
+                }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  theme === key
+                    ? "bg-gray-900 text-white shadow-lg"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <span>{themeOption.icon}</span>
+                <span>{themeOption.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col items-center gap-6 max-w-2xl">
         {/* User Info Section */}
@@ -129,8 +214,11 @@ export default function EventMode({
         <div className="relative w-full max-w-[min(85vw,480px)]">
           {/* Animated border glow */}
           <div
-            className="absolute inset-0 rounded-3xl bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 blur-xl opacity-75"
-            style={{ animation: "pulse-glow 3s ease-in-out infinite" }}
+            className="absolute inset-0 rounded-3xl blur-xl opacity-75"
+            style={{
+              background: `radial-gradient(circle, ${currentTheme.glowColor}, transparent)`,
+              animation: "pulse-glow 3s ease-in-out infinite"
+            }}
           />
 
           {/* Card container */}
