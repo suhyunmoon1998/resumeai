@@ -78,47 +78,103 @@ export default function EventMode({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-[calc(1rem+env(safe-area-inset-top))]">
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-[calc(1rem+env(safe-area-inset-top))]"
+      style={{
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)",
+        backgroundSize: "400% 400%",
+        animation: "gradientShift 15s ease infinite"
+      }}>
+      <style>{`
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes float-up {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 60px rgba(240,147,251,0.2); }
+          50% { box-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 80px rgba(240,147,251,0.4); }
+        }
+        @keyframes bounce-pop {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.15); }
+          100% { transform: scale(1); }
+        }
+      `}</style>
+
       <button
         onClick={onClose}
         aria-label="Exit event mode"
-        className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] rounded-full bg-gray-100 px-4 py-2 text-sm font-bold text-gray-600"
+        className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] rounded-full bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all"
       >
         ✕ Close
       </button>
 
-      <p className="mb-1 font-display text-2xl font-bold tracking-tight text-gray-900">
-        {data.name}
-      </p>
-      {data.title && <p className="mb-5 text-sm text-gray-500">{data.title}</p>}
-
-      {qrUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={qrUrl}
-          alt={`QR code for ${data.name}'s card`}
-          className="w-full max-w-[min(78vw,420px)] rounded-2xl"
-        />
-      ) : (
-        <div className="flex aspect-square w-full max-w-[min(78vw,420px)] items-center justify-center rounded-2xl bg-gray-100 text-gray-400">
-          Generating QR…
+      <div className="flex flex-col items-center gap-6 max-w-2xl">
+        {/* User Info Section */}
+        <div className="text-center text-white drop-shadow-lg">
+          <h1 className="font-display text-5xl font-bold tracking-tight mb-2">
+            {data.name}
+          </h1>
+          {data.title && (
+            <p className="text-xl font-semibold text-white/90 mb-1">{data.title}</p>
+          )}
+          <p className="text-sm text-white/70">scan my card to connect</p>
         </div>
-      )}
 
-      <p className="mt-5 font-caveat text-2xl text-gray-500">scan me! 📲</p>
+        {/* QR Code Card */}
+        <div className="relative w-full max-w-[min(85vw,480px)]">
+          {/* Animated border glow */}
+          <div
+            className="absolute inset-0 rounded-3xl bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 blur-xl opacity-75"
+            style={{ animation: "pulse-glow 3s ease-in-out infinite" }}
+          />
 
-      <div
-        className={`mt-4 flex items-center gap-2 rounded-full bg-emerald-50 px-5 py-2.5 text-emerald-700 ${
-          pop ? "event-counter-pop" : ""
-        }`}
-        role="status"
-        aria-live="polite"
-      >
-        <span className="text-xl" aria-hidden>💌</span>
-        <span className="font-bold tabular-nums">{scans}</span>
-        <span className="text-sm font-semibold">
-          {scans === 1 ? "card delivered" : "cards delivered"}
-        </span>
+          {/* Card container */}
+          <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl"
+            style={{ animation: "float-up 3s ease-in-out infinite" }}>
+            {qrUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={qrUrl}
+                alt={`QR code for ${data.name}'s card`}
+                className="w-full aspect-square rounded-2xl"
+              />
+            ) : (
+              <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
+                <span>Generating QR…</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <p className="font-caveat text-3xl text-white drop-shadow-lg animate-bounce">
+          📱 scan me to connect!
+        </p>
+
+        {/* Live Counter */}
+        <div
+          className="mt-2 flex items-center gap-3 rounded-full bg-white/20 backdrop-blur-md px-6 py-3 text-white border border-white/30 shadow-xl"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="text-2xl" aria-hidden>💌</span>
+          <div className="flex flex-col items-start">
+            <span
+              className="font-display text-3xl font-bold"
+              style={pop ? { animation: "bounce-pop 0.5s ease-out" } : {}}
+            >
+              {scans}
+            </span>
+            <span className="text-xs font-medium text-white/80 leading-none">
+              {scans === 1 ? "connection" : "connections"}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
