@@ -72,6 +72,7 @@ export default function EventMode({
   const [pop, setPop] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
   const [theme, setTheme] = useState<keyof typeof THEMES>("vibrant");
+  const [isPortrait, setIsPortrait] = useState(true);
   const wakeLock = useRef<{ release: () => Promise<void> } | null>(null);
 
   // Big high-contrast QR
@@ -125,6 +126,20 @@ export default function EventMode({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // Handle orientation changes
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      setIsPortrait(window.innerHeight >= window.innerWidth);
+    };
+    handleOrientationChange();
+    window.addEventListener("orientationchange", handleOrientationChange);
+    window.addEventListener("resize", handleOrientationChange);
+    return () => {
+      window.removeEventListener("orientationchange", handleOrientationChange);
+      window.removeEventListener("resize", handleOrientationChange);
+    };
+  }, []);
+
   const currentTheme = THEMES[theme];
 
   return (
@@ -155,28 +170,30 @@ export default function EventMode({
         }
       `}</style>
 
-      <div className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] flex gap-2">
+      <div className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] flex gap-2 md:gap-3">
         <button
           onClick={() => setShowThemePicker(!showThemePicker)}
           aria-label="Theme picker"
-          className="rounded-full bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all"
+          className="rounded-full bg-white/90 backdrop-blur-sm px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all min-h-10 min-w-10 flex items-center justify-center"
         >
-          🎨 Theme
+          <span className="hidden sm:inline">🎨 Theme</span>
+          <span className="sm:hidden">🎨</span>
         </button>
         <button
           onClick={onClose}
           aria-label="Exit event mode"
-          className="rounded-full bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all"
+          className="rounded-full bg-white/90 backdrop-blur-sm px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font-bold text-gray-700 shadow-lg hover:bg-white transition-all min-h-10 min-w-10 flex items-center justify-center"
         >
-          ✕ Close
+          <span className="hidden sm:inline">✕ Close</span>
+          <span className="sm:hidden">✕</span>
         </button>
       </div>
 
       {/* Theme Picker */}
       {showThemePicker && (
-        <div className="absolute left-4 top-[calc(1rem+env(safe-area-inset-top))] bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 z-50">
-          <p className="text-sm font-semibold text-gray-700 mb-3">Choose a theme</p>
-          <div className="grid grid-cols-2 gap-2 min-w-max">
+        <div className="absolute left-4 right-4 sm:left-auto top-[calc(3.5rem+env(safe-area-inset-top))] bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-3 md:p-4 z-50 max-w-xs sm:max-w-none">
+          <p className="text-xs md:text-sm font-semibold text-gray-700 mb-3">Choose a theme</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {Object.entries(THEMES).map(([key, themeOption]) => (
               <button
                 key={key}
@@ -184,34 +201,35 @@ export default function EventMode({
                   setTheme(key as keyof typeof THEMES);
                   setShowThemePicker(false);
                 }}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2 px-2 md:px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-all min-h-12 ${
                   theme === key
                     ? "bg-gray-900 text-white shadow-lg"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                <span>{themeOption.icon}</span>
-                <span>{themeOption.name}</span>
+                <span className="text-lg md:text-base">{themeOption.icon}</span>
+                <span className="hidden md:inline">{themeOption.name}</span>
               </button>
             ))}
           </div>
         </div>
       )}
 
-      <div className="flex flex-col items-center gap-6 max-w-2xl">
+      {/* Main Content - Portrait/Landscape Layout */}
+      <div className={`flex ${isPortrait ? "flex-col" : "flex-row"} items-center gap-4 md:gap-6 max-w-4xl h-full justify-center`}>
         {/* User Info Section */}
-        <div className="text-center text-white drop-shadow-lg">
-          <h1 className="font-display text-5xl font-bold tracking-tight mb-2">
+        <div className={`text-center text-white drop-shadow-lg ${isPortrait ? "w-full" : "flex-1"}`}>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-2">
             {data.name}
           </h1>
           {data.title && (
-            <p className="text-xl font-semibold text-white/90 mb-1">{data.title}</p>
+            <p className="text-base sm:text-lg md:text-xl font-semibold text-white/90 mb-1">{data.title}</p>
           )}
-          <p className="text-sm text-white/70">scan my card to connect</p>
+          <p className="text-xs sm:text-sm text-white/70">scan my card to connect</p>
         </div>
 
         {/* QR Code Card */}
-        <div className="relative w-full max-w-[min(85vw,480px)]">
+        <div className={`relative ${isPortrait ? "w-full max-w-[min(85vw,480px)]" : "flex-1 h-full max-h-[60vh]"}`}>
           {/* Animated border glow */}
           <div
             className="absolute inset-0 rounded-3xl blur-xl opacity-75"
@@ -222,17 +240,17 @@ export default function EventMode({
           />
 
           {/* Card container */}
-          <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl"
+          <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl p-4 md:p-8 shadow-2xl w-full h-full"
             style={{ animation: "float-up 3s ease-in-out infinite" }}>
             {qrUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={qrUrl}
                 alt={`QR code for ${data.name}'s card`}
-                className="w-full aspect-square rounded-2xl"
+                className="w-full h-full aspect-square rounded-2xl object-cover"
               />
             ) : (
-              <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
+              <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400 text-xs sm:text-sm">
                 <span>Generating QR…</span>
               </div>
             )}
@@ -240,25 +258,25 @@ export default function EventMode({
         </div>
 
         {/* Call to Action */}
-        <p className="font-caveat text-3xl text-white drop-shadow-lg animate-bounce">
+        <p className="font-caveat text-2xl sm:text-3xl text-white drop-shadow-lg animate-bounce">
           📱 scan me to connect!
         </p>
 
         {/* Live Counter */}
         <div
-          className="mt-2 flex items-center gap-3 rounded-full bg-white/20 backdrop-blur-md px-6 py-3 text-white border border-white/30 shadow-xl"
+          className="mt-2 flex items-center gap-2 md:gap-3 rounded-full bg-white/20 backdrop-blur-md px-4 md:px-6 py-2 md:py-3 text-white border border-white/30 shadow-xl min-h-12"
           role="status"
           aria-live="polite"
         >
-          <span className="text-2xl" aria-hidden>💌</span>
+          <span className="text-xl md:text-2xl" aria-hidden>💌</span>
           <div className="flex flex-col items-start">
             <span
-              className="font-display text-3xl font-bold"
+              className="font-display text-2xl md:text-3xl font-bold"
               style={pop ? { animation: "bounce-pop 0.5s ease-out" } : {}}
             >
               {scans}
             </span>
-            <span className="text-xs font-medium text-white/80 leading-none">
+            <span className="text-xs md:text-sm font-medium text-white/80 leading-none">
               {scans === 1 ? "connection" : "connections"}
             </span>
           </div>
