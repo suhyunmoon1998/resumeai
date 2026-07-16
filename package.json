@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.2",
+    "@prisma/client": "^7.8.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.0",
     "class-variance-authority": "^0.7.1",
@@ -17,6 +19,8 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^1.23.0",
     "next": "^15.5.18",
+    "next-auth": "^4.24.14",
+    "prisma": "^7.8.0",
     "qrcode": "^1.5.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
