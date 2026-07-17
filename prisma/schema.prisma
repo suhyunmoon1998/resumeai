@@ -40,9 +40,14 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          String    @default("user") // "user" or "admin"
   accounts      Account[]
   sessions      Session[]
   cards         Card[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([role])
 }
 
 model VerificationToken {
